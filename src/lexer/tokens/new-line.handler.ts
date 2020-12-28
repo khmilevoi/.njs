@@ -21,7 +21,7 @@ export class NewLineHandler extends NjsBaseHandler {
 
     if (lexeme === this.newLine) {
       descriptor.block = true;
-      descriptor.token = new NewLineToken();
+      descriptor.token = new NewLineToken(this.newLine);
     }
 
     return descriptor;

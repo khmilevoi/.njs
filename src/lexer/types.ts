@@ -62,12 +62,18 @@ export abstract class NjsBaseHandler implements NjsHandler {
 export interface NjsToken {
   readonly type: string;
   readonly inner?: string;
+
+  toString(): string;
 }
 
 export abstract class NjsBaseToken implements NjsToken {
   abstract readonly type: string = "base";
 
   constructor(public readonly inner: string = "") {}
+
+  toString(): string {
+    return this.inner;
+  }
 }
 
 export interface NjsLexer {

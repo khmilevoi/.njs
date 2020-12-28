@@ -6,20 +6,45 @@ export class Lexer implements NjsLexer {
   private readonly tokens: NjsToken[] = [];
   private lexemes: string = "";
   private currentHandler: NjsHandler | null = null;
+  private blockIndex = 0;
 
   constructor(...handlers: NjsHandler[]) {
     this.handlers = handlers;
   }
 
   run(source: string): NjsToken[] {
-    for (const lexeme of source) {
-      this.readLexeme(lexeme, this.currentHandler);
+    for (let index = 0; index < source.length; ++index) {
+      let lexeme = source[index];
+
+      if (lexeme === "\r") {
+        continue;
+      }
+
+      let currentHandlers = this.handlers;
+      let prevHandler = this.currentHandler;
+
+      const descriptor = this.readLexeme(lexeme, this.currentHandler);
+
+      if (descriptor?.reset) {
+        this.currentHandler = null;
+
+        if (prevHandler) {
+          currentHandlers = currentHandlers.filter(
+            (handler) => handler !== prevHandler
+          );
+        }
+
+        index = this.blockIndex;
+        lexeme = source[index];
+        this.lexemes = this.lexemes.substring(0, index);
+      }
 
       if (this.currentHandler == null) {
-        for (const handler of this.handlers) {
+        for (const handler of currentHandlers) {
           const descriptor = this.readLexeme(lexeme, handler);
 
-          if (descriptor?.block === true) {
+          if (descriptor?.block === true || descriptor?.token) {
+            this.blockIndex = index;
             break;
           }
         }

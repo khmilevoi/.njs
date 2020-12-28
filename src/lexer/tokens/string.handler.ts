@@ -7,6 +7,14 @@ import {
 
 export class StringToken extends NjsBaseToken {
   readonly type = "string";
+
+  constructor(inner: string, private readonly divider: string) {
+    super(inner);
+  }
+
+  toString(): string {
+    return this.divider + this.inner + this.divider;
+  }
 }
 
 export class StringHandler extends NjsBaseHandler {
@@ -32,7 +40,7 @@ export class StringHandler extends NjsBaseHandler {
     if (lexeme === this.divider) {
       if (this.processing) {
         descriptor.block = true;
-        descriptor.token = new StringToken(this.inner);
+        descriptor.token = new StringToken(this.inner, this.divider);
         this.stopProcessing();
         this.cleanInner();
       } else {

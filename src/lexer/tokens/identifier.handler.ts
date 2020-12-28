@@ -29,6 +29,8 @@ export class IdentifierHandler extends NjsBaseHandler {
 
       if (this.pattern.test(this.inner)) {
         descriptor.token = new IdentifierToken(this.inner);
+      } else {
+        descriptor.reset = true;
       }
 
       this.cleanInner();
