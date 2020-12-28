@@ -1,11 +1,24 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
     "outDir": "./dist/",
-    "noImplicitAny": true,
-    "module": "es6",
-    "target": "es5",
-    "jsx": "react",
+    "rootDirs": [
+      "src/",
+      "tests/",
+    ],
     "allowJs": true,
-    "sourceMap": true
-  }
+    "baseUrl": "src",
+    "target": "es2017"
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
