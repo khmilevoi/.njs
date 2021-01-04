@@ -6,6 +6,7 @@ export interface NjsLexerHandlerLexemeDescriptor {
 
 export interface NjsLexerHandlerDescriptor {
   previous?: number;
+  exclude?: boolean;
 }
 
 export interface NjsHandler {
@@ -21,6 +22,7 @@ export interface NjsHandler {
 export abstract class NjsBaseHandler implements NjsHandler {
   readonly descriptor: NjsLexerHandlerDescriptor = {
     previous: 0,
+    exclude: false,
   };
   protected processing = false;
   protected inner = "";
