@@ -1,3 +1,4 @@
+import { OneLineCommentToken } from "./tokens/one-line-comment.handler";
 import { NjsHandler, NjsLexer, NjsToken } from "./types";
 
 export class Lexer implements NjsLexer {
@@ -63,7 +64,7 @@ export class Lexer implements NjsLexer {
       this.lexemes.substr(-(handler.descriptor.previous || this.lexemes.length))
     );
 
-    if (descriptor?.token != null) {
+    if (descriptor?.token != null && !handler?.descriptor.exclude) {
       this.tokens.push(descriptor.token);
     }
 

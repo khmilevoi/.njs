@@ -21,6 +21,7 @@ export class OneLineCommentToken extends NjsBaseToken {
 export class OneLineCommentHandler extends NjsBaseHandler {
   readonly descriptor: NjsLexerHandlerDescriptor = {
     previous: 1,
+    exclude: true,
   };
 
   private readonly end = "\n";
