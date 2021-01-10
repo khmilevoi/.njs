@@ -1,79 +1,68 @@
-import { OneLineCommentToken } from "./tokens/one-line-comment.handler";
+import { NjsTarget, NjsVisitor } from "../shared/visitor.shared";
+import { OneLineCommentHandler } from "./handlers/one-line-comment.handler";
+import { SpaceHandler } from "./handlers/space.handler";
 import { NjsHandler, NjsLexer, NjsToken } from "./types";
 
-export class Lexer implements NjsLexer {
-  private readonly handlers: NjsHandler[];
+export class Lexer implements NjsLexer, NjsTarget {
+  private static readonly defaultHandlers: NjsHandler<any>[] = [
+    new SpaceHandler(),
+    new OneLineCommentHandler(),
+  ];
+  private readonly handlers: NjsHandler<any>[];
 
-  private readonly tokens: NjsToken[] = [];
+  private readonly tokens: NjsToken<any>[] = [];
   private lexemes: string = "";
-  private currentHandler: NjsHandler | null = null;
-  private blockIndex = 0;
+  private savedIterator = 0;
+  private iterator = 0;
+  private visitor = new NjsVisitor(this);
 
-  constructor(...handlers: NjsHandler[]) {
-    this.handlers = handlers;
+  constructor(...handlers: NjsHandler<any>[]) {
+    this.handlers = [...Lexer.defaultHandlers, ...handlers];
   }
 
-  run(source: string): NjsToken[] {
-    for (let index = 0; index < source.length; ++index) {
-      let lexeme = source[index];
+  peep() {
+    return this.lexemes[this.iterator];
+  }
 
-      if (lexeme === "\r") {
-        continue;
-      }
+  pop() {
+    return this.lexemes[this.iterator++];
+  }
 
-      let currentHandlers = this.handlers;
-      let prevHandler = this.currentHandler;
+  revert(amount?: number) {
+    if (amount == null) {
+      this.iterator = this.savedIterator;
+    } else {
+      this.iterator -= amount;
+    }
+  }
 
-      const descriptor = this.readLexeme(lexeme, this.currentHandler);
+  run(source: string): NjsToken<any>[] {
+    this.lexemes = source;
 
-      if (descriptor?.reset) {
-        this.currentHandler = null;
+    while (this.peep() != null) {
+      const currentIterator = this.iterator;
 
-        if (prevHandler) {
-          currentHandlers = currentHandlers.filter(
-            (handler) => handler !== prevHandler
-          );
-        }
+      this.handlers.forEach((handler) => {
+        if (this.peep() != null) {
+          this.saveIterator();
 
-        index = this.blockIndex;
-        lexeme = source[index];
-        this.lexemes = this.lexemes.substring(0, index);
-      }
+          const descriptor = handler.read(this.visitor);
 
-      if (this.currentHandler == null) {
-        for (const handler of currentHandlers) {
-          const descriptor = this.readLexeme(lexeme, handler);
-
-          if (descriptor?.block === true || descriptor?.token) {
-            this.blockIndex = index;
-            break;
+          if (descriptor.token) {
+            this.tokens.push(descriptor.token);
           }
         }
-      }
+      });
 
-      this.lexemes += lexeme;
+      if (currentIterator === this.iterator) {
+        this.pop();
+      }
     }
 
     return this.tokens;
   }
 
-  private readLexeme(lexeme: string, handler: NjsHandler | null) {
-    const descriptor = handler?.read(
-      lexeme,
-      this.tokens.slice(-(handler.descriptor.previous || this.tokens.length)),
-      this.lexemes.substr(-(handler.descriptor.previous || this.lexemes.length))
-    );
-
-    if (descriptor?.token != null && !handler?.descriptor.exclude) {
-      this.tokens.push(descriptor.token);
-    }
-
-    if (descriptor?.block === true) {
-      this.currentHandler = handler;
-    } else {
-      this.currentHandler = null;
-    }
-
-    return descriptor;
+  private saveIterator() {
+    this.savedIterator = this.iterator;
   }
 }
