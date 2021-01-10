@@ -1,12 +1,12 @@
 import { Njs } from "./language/njs";
 import { Lexer } from "./lexer/lexer";
-import { IdentifierHandler } from "./lexer/tokens/identifier.handler";
-import { NewLineHandler } from "./lexer/tokens/new-line.handler";
-import { NumberHandler } from "./lexer/tokens/number.handler";
-import { OneLineCommentHandler } from "./lexer/tokens/one-line-comment.handler";
-import { SemicolonHandler } from "./lexer/tokens/semicolon.handler";
-import { ServiceSymbolsHandler } from "./lexer/tokens/service-symbols.handler";
-import { StringHandler } from "./lexer/tokens/string.handler";
+import { IdentifierHandler } from "./lexer/handlers/identifier.handler";
+import { NewLineHandler } from "./lexer/handlers/new-line.handler";
+import { NumberHandler } from "./lexer/handlers/number.handler";
+import { OneLineCommentHandler } from "./lexer/handlers/one-line-comment.handler";
+import { SemicolonHandler } from "./lexer/handlers/semicolon.handler";
+import { ServiceSymbolsHandler } from "./lexer/handlers/service-symbols.handler";
+import { StringHandler } from "./lexer/handlers/string.handler";
 import { Logger } from "./logger/logger";
 
 export const njs = new Njs(
