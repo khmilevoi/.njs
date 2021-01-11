@@ -17,7 +17,7 @@ export class IdentifierHandler extends NjsBaseHandler<string> {
     if (this.firstLetter.test(visitor.peep())) {
       let inner = "";
 
-      while (this.firstLetter.test(visitor.peep())) {
+      while (visitor.accept(this.firstLetter)) {
         inner += visitor.pop();
 
         if (!IdentifierHandler.pattern.test(inner)) {

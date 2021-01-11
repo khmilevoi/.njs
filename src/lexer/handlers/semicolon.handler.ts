@@ -13,7 +13,7 @@ export class SemicolonHandler extends NjsBaseHandler<never> {
   public static readonly semicolon = ";";
 
   read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<never> {
-    if (visitor.peep() === SemicolonHandler.semicolon) {
+    if (visitor.accept(SemicolonHandler.semicolon)) {
       visitor.pop();
 
       return {

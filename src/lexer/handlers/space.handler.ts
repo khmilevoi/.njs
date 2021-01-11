@@ -5,9 +5,7 @@ export class SpaceHandler extends NjsBaseHandler<never> {
   public static readonly pattern = / /;
 
   read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<never> {
-    while (SpaceHandler.pattern.test(visitor.peep())) {
-      visitor.pop();
-    }
+    visitor.popWhileAccept(SpaceHandler.pattern);
 
     return {};
   }

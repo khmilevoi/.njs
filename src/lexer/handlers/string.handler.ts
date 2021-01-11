@@ -21,12 +21,12 @@ export class StringHandler extends NjsBaseHandler<string> {
   public static readonly divider = '"';
 
   read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
-    if (visitor.peep() === StringHandler.divider) {
+    if (visitor.accept(StringHandler.divider)) {
       visitor.pop();
 
       let inner = visitor.pop();
 
-      while (visitor.peep() != StringHandler.divider) {
+      while (visitor.notAccept(StringHandler.divider)) {
         inner += visitor.pop();
       }
 

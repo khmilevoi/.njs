@@ -13,7 +13,7 @@ export class NewLineHandler extends NjsBaseHandler<never> {
   public static readonly newLine = "\n";
 
   read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<never> {
-    if (visitor.peep() === NewLineHandler.newLine) {
+    if (visitor.accept(NewLineHandler.newLine)) {
       visitor.pop();
 
       return {

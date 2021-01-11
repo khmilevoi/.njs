@@ -18,7 +18,7 @@ export class NumberHandler extends NjsBaseHandler<number> {
     if (this.digit.test(visitor.peep())) {
       let inner = visitor.pop();
 
-      while (this.digit.test(visitor.peep())) {
+      while (visitor.accept(this.digit)) {
         inner += visitor.pop();
 
         if (!NumberHandler.pattern.test(inner)) {

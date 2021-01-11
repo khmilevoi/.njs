@@ -9,7 +9,7 @@ export class OneLineCommentHandler extends NjsBaseHandler<string> {
     if (visitor.pop().concat(visitor.peep()) === OneLineCommentHandler.start) {
       visitor.pop();
 
-      while (visitor.peep() !== OneLineCommentHandler.end) {
+      while (visitor.notAccept(OneLineCommentHandler.end)) {
         visitor.pop();
       }
     } else {

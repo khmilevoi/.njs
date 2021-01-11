@@ -13,7 +13,7 @@ export class ServiceSymbolsHandler extends NjsBaseHandler<string> {
   public static readonly pattern = /(?=\W)(?=\S)./;
 
   read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
-    if (ServiceSymbolsHandler.pattern.test(visitor.peep())) {
+    if (visitor.accept(ServiceSymbolsHandler.pattern)) {
       return {
         token: new ServiceSymbolsToken(visitor.pop()),
       };
