@@ -12,8 +12,6 @@ export class OneLineCommentHandler extends NjsBaseHandler<string> {
       while (visitor.peep() !== OneLineCommentHandler.end) {
         visitor.pop();
       }
-
-      visitor.revert(1);
     } else {
       visitor.revert();
     }
