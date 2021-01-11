@@ -20,12 +20,18 @@ export class Lexer implements NjsLexer, NjsTarget {
     this.handlers = [...Lexer.defaultHandlers, ...handlers];
   }
 
-  peep() {
+  peep(): string {
     return this.lexemes[this.iterator];
   }
 
-  pop() {
-    return this.lexemes[this.iterator++];
+  pop(): string {
+    const prev = this.lexemes[this.iterator];
+
+    if (this.iterator < this.lexemes.length) {
+      this.iterator += 1;
+    }
+
+    return prev;
   }
 
   revert(amount?: number) {
