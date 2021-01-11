@@ -6,6 +6,7 @@
 - string
 - boolean
 - class
+- array (maybe generic)
 
 хз пока что:
 
