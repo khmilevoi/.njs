@@ -1,38 +1,34 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
-import {
-  NjsBaseHandler,
-  NjsBaseToken,
-  NjsLexerHandlerLexemeDescriptor,
-} from "../types";
+import {NjsVisitor} from "../../shared/visitor.shared";
+import {NjsBaseHandler, NjsBaseToken, NjsLexerHandlerLexemeDescriptor,} from "../types";
 
 export class NumberToken extends NjsBaseToken<number> {
-  readonly type: string = "number";
+    readonly type: string = "number";
 }
 
 export class NumberHandler extends NjsBaseHandler<number> {
-  public static readonly pattern = /^\d+\.?(\d+)?$/;
-
-  private readonly digit = /\d|\./;
-
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<number> {
-    if (this.digit.test(visitor.peep())) {
-      let inner = visitor.pop();
-
-      while (this.digit.test(visitor.peep())) {
-        inner += visitor.pop();
-
-        if (!NumberHandler.pattern.test(inner)) {
-          return {};
+    public static readonly pattern = /^\d+\.?(\d+)?$/;
+    
+    private readonly digit = /\d|\./;
+    
+    read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<number> {
+        if (this.digit.test(visitor.peep())) {
+            let inner = visitor.pop();
+            
+            while (this.digit.test(visitor.peep())) {
+                inner += visitor.pop();
+                
+                if (!NumberHandler.pattern.test(inner)) {
+                    return {};
+                }
+            }
+            
+            if (NumberHandler.pattern.test(inner)) {
+                return {
+                    token: new NumberToken(Number.parseFloat(inner)),
+                };
+            }
         }
-      }
-
-      if (NumberHandler.pattern.test(inner)) {
-        return {
-          token: new NumberToken(Number.parseFloat(inner)),
-        };
-      }
+        
+        return {};
     }
-
-    return {};
-  }
 }

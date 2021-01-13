@@ -1,7 +1,11 @@
-export class NjsError extends Error {}
+export class NjsError extends Error {
+    constructor(public readonly source: string, public readonly message: string) {
+        super(`[${source.toUpperCase()}] ${message}`);
+    }
+}
 
 export interface NjsLogger {
-  log(...data: any[]): void;
-
-  handle(error: NjsError): void;
+    log(...data: any[]): void;
+    
+    handle(error: NjsError): void;
 }
