@@ -5,6 +5,7 @@ import {SemicolonHandler} from "../lexer/handlers/semicolon.handler";
 import {ServiceSymbolsHandler} from "../lexer/handlers/service-symbols.handler";
 import {StringHandler} from "../lexer/handlers/string.handler";
 import {Lexer} from "../lexer/lexer";
+import {LexerError} from "../lexer/lexer.error";
 import {loadFile} from "./utils/loadFile";
 
 describe("Lexer", () => {
@@ -56,6 +57,22 @@ describe("Lexer", () => {
         const tokens = lexer.run(source);
         
         expect(tokens).toHaveLength(3);
+    });
+    
+    it("should catch string error", async function () {
+        const source = await loadFile("/resources/lexer/crash.njs");
+        
+        const lexer = new Lexer(new StringHandler());
+        
+        let error: LexerError | null = null;
+        
+        try {
+            lexer.run(source);
+        } catch (e) {
+            error = e;
+        }
+        
+        expect(error).not.toBeNull();
     });
     
     it("should tokenize correctly", function () {

@@ -1,5 +1,5 @@
 export class NjsError extends Error {
-    constructor(public readonly source: string, public readonly message: string) {
+    constructor(public readonly source: string, message: string) {
         super(`[${source.toUpperCase()}] ${message}`);
     }
 }
