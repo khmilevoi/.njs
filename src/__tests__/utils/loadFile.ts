@@ -1,8 +1,6 @@
-import * as fs from "fs/promises";
 import * as path from "path";
+import {Njs} from "../../language/njs";
 
-export const loadFile = async (pathToFile: string) => {
-  const buffer = await fs.readFile(path.join(__dirname, "../", pathToFile));
-
-  return buffer.toString();
+export const loadFile = (pathToFile: string) => {
+    return Njs.loadFile(path.join(__dirname, "../", pathToFile));
 };
