@@ -49,4 +49,23 @@ describe("Preprocessor", () => {
             expect(result.includes(`string foo${foo || ""} = "foo${foo || ""}"`)).toBeTruthy();
         }
     });
+    
+    it("should catch loop exception", async function () {
+        const source = await loadFile("/resources/preprocessor/loop.njs");
+        
+        const preprocessor = new Preprocessor(new FileLoaderHandler(new NjsLoader()));
+        
+        let error: PreprocessorError | null = null;
+        
+        try {
+            
+            await preprocessor.run(source, `${rootPath}/__tests__/resources/preprocessor/`);
+        } catch (e) {
+            error = e;
+        }
+        
+        expect(error).not.toBeNull();
+        
+        debugger
+    });
 });
