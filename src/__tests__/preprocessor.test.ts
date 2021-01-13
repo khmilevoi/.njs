@@ -2,6 +2,7 @@ import {FileLoaderHandler} from "../preprocessor/handlers/file-loader/file-loade
 import {NjsLoader} from "../preprocessor/handlers/file-loader/loaders/njs.loader";
 import {Preprocessor} from "../preprocessor/preprocessor";
 import {PreprocessorError} from "../preprocessor/preprocessor.error";
+import {rootPath} from "../rootPath";
 import {loadFile} from "./utils/loadFile";
 
 describe("Preprocessor", () => {
@@ -42,7 +43,7 @@ describe("Preprocessor", () => {
     it("should handle njs imports", async function () {
         const preprocessor = new Preprocessor(new FileLoaderHandler(new NjsLoader()));
         
-        const result = await preprocessor.run(source, "/home/khmilevoi/codding/njs/src/__tests__/resources/preprocessor/");
+        const result = await preprocessor.run(source, `${rootPath}/__tests__/resources/preprocessor/`);
         
         for (let foo = 0; foo < 7; ++foo) {
             expect(result.includes(`string foo${foo || ""} = "foo${foo || ""}"`)).toBeTruthy();
