@@ -1,5 +1,5 @@
 import { NjsVisitor } from "../../shared/visitor.shared";
-import {LexerError} from "../lexer.error";
+import { LexerError } from "../lexer.error";
 import {
   NjsBaseHandler,
   NjsBaseToken,
@@ -25,13 +25,13 @@ export class StringHandler extends NjsBaseHandler<string> {
     if (visitor.accept(StringHandler.divider)) {
       visitor.pop();
 
-      let inner = visitor.pop();
+      let inner = "";
 
       while (visitor.notAccept(StringHandler.divider)) {
-        if(visitor.peep() == null) {
-          throw new LexerError("the string does not end")
+        if (visitor.peep() == null) {
+          throw new LexerError("the string does not end");
         }
-        
+
         inner += visitor.pop();
       }
 
