@@ -21,7 +21,7 @@ export class File {
   }
 }
 
-export class FileLoaderHandler implements NjsPreprocessorHandler {
+export class ImportHandler implements NjsPreprocessorHandler {
   public static readonly firstPattern = /^(?:\s*import\s+".*"\s*;\s*)+/g;
   public static readonly secondPattern = /^\s*import\s+"(.*)"\s*;\s*$/gm;
   public readonly files: Map<string, File> = new Map<string, File>();
@@ -33,10 +33,8 @@ export class FileLoaderHandler implements NjsPreprocessorHandler {
   }
 
   readImports(source: string, dir: string = ""): [File[], string, string] {
-    const [imports = ""] = source.match(FileLoaderHandler.firstPattern) ?? [];
-    const [...second] = imports
-      .trim()
-      .matchAll(FileLoaderHandler.secondPattern);
+    const [imports = ""] = source.match(ImportHandler.firstPattern) ?? [];
+    const [...second] = imports.trim().matchAll(ImportHandler.secondPattern);
 
     const correctFiles: File[] = [];
 

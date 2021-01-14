@@ -6,10 +6,16 @@ export interface NjsTarget {
   pop(): string;
 
   revert(amount?: number): void;
+
+  getLine(): number;
 }
 
 export class NjsVisitor {
   constructor(private readonly instance: NjsTarget) {}
+
+  getLIne() {
+    return this.instance.getLine();
+  }
 
   peep(): string {
     return this.instance.peep();

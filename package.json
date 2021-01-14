@@ -4,7 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "webpack",
+    "build": "webpack",
+    "start": "npm run build && node ./dist/bundle.js",
     "watch": "webpack --watch",
     "test": "jest --collect-coverage",
     "postinstall": "npx typesync"

@@ -27,9 +27,11 @@ export class StringHandler extends NjsBaseHandler<string> {
 
       let inner = "";
 
+      const startLine = visitor.getLIne();
+
       while (visitor.notAccept(StringHandler.divider)) {
         if (visitor.peep() == null) {
-          throw new LexerError("the string does not end");
+          throw new LexerError("the string does not end", startLine);
         }
 
         inner += visitor.pop();
