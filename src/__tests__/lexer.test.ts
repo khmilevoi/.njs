@@ -62,7 +62,7 @@ describe("Lexer", () => {
   it("should catch string error", async function () {
     const source = await loadFile("/resources/lexer/crash.njs");
 
-    const lexer = new Lexer(new StringHandler());
+    const lexer = new Lexer(new StringHandler(), new NewLineHandler());
 
     let error: LexerError | null = null;
 
@@ -73,6 +73,7 @@ describe("Lexer", () => {
     }
 
     expect(error).not.toBeNull();
+    expect(error?.line).toBe(18);
   });
 
   it("should handle empty string", async function () {

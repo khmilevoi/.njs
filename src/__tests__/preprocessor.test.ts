@@ -1,4 +1,4 @@
-import { FileLoaderHandler } from "../preprocessor/handlers/file-loader/file-loader.handler";
+import { ImportHandler } from "../preprocessor/handlers/file-loader/import.handler";
 import { NjsLoader } from "../preprocessor/handlers/file-loader/loaders/njs.loader";
 import { Preprocessor } from "../preprocessor/preprocessor";
 import { PreprocessorError } from "../preprocessor/preprocessor.error";
@@ -15,7 +15,7 @@ describe("Preprocessor", () => {
   it("should read imports", async function () {
     const stress = await loadFile("/resources/preprocessor/stress.njs");
 
-    const fileLoaderHandler = new FileLoaderHandler();
+    const fileLoaderHandler = new ImportHandler();
 
     const [result] = fileLoaderHandler.readImports(stress);
 
@@ -28,7 +28,7 @@ describe("Preprocessor", () => {
   it("should catch exception duplicate imports", async function () {
     const stress = await loadFile("/resources/preprocessor/stress.njs");
 
-    const fileLoaderHandler = new FileLoaderHandler();
+    const fileLoaderHandler = new ImportHandler();
 
     let error: PreprocessorError | null = null;
 
@@ -43,9 +43,7 @@ describe("Preprocessor", () => {
   });
 
   it("should handle njs imports", async function () {
-    const preprocessor = new Preprocessor(
-      new FileLoaderHandler(new NjsLoader())
-    );
+    const preprocessor = new Preprocessor(new ImportHandler(new NjsLoader()));
 
     const result = await preprocessor.run(
       source,
@@ -62,9 +60,7 @@ describe("Preprocessor", () => {
   it("should catch loop exception", async function () {
     const source = await loadFile("/resources/preprocessor/loop.njs");
 
-    const preprocessor = new Preprocessor(
-      new FileLoaderHandler(new NjsLoader())
-    );
+    const preprocessor = new Preprocessor(new ImportHandler(new NjsLoader()));
 
     let error: PreprocessorError | null = null;
 
@@ -83,9 +79,7 @@ describe("Preprocessor", () => {
   it("should catch self-import exception", async function () {
     const source = await loadFile("/resources/preprocessor/self-import.njs");
 
-    const preprocessor = new Preprocessor(
-      new FileLoaderHandler(new NjsLoader())
-    );
+    const preprocessor = new Preprocessor(new ImportHandler(new NjsLoader()));
 
     let error: PreprocessorError | null = null;
 
@@ -102,9 +96,7 @@ describe("Preprocessor", () => {
   });
 
   it("should catch can't handle exception", async function () {
-    const preprocessor = new Preprocessor(
-      new FileLoaderHandler(new NjsLoader())
-    );
+    const preprocessor = new Preprocessor(new ImportHandler(new NjsLoader()));
 
     let error: PreprocessorError | null = null;
 
@@ -121,9 +113,7 @@ describe("Preprocessor", () => {
   });
 
   it("should catch exception with empty string", async function () {
-    const preprocessor = new Preprocessor(
-      new FileLoaderHandler(new NjsLoader())
-    );
+    const preprocessor = new Preprocessor(new ImportHandler(new NjsLoader()));
 
     let error: PreprocessorError | null = null;
 

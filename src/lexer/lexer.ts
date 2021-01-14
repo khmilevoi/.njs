@@ -1,4 +1,5 @@
 import { NjsTarget, NjsVisitor } from "../shared/visitor.shared";
+import { NewLineToken } from "./handlers/new-line.handler";
 import { OneLineCommentHandler } from "./handlers/one-line-comment.handler";
 import { SpaceHandler } from "./handlers/space.handler";
 import { NjsHandler, NjsLexer, NjsToken } from "./types";
@@ -14,6 +15,7 @@ export class Lexer implements NjsLexer, NjsTarget {
   private lexemes: string = "";
   private savedIterator = 0;
   private iterator = 0;
+  private line = 1;
   private visitor = new NjsVisitor(this);
 
   constructor(...handlers: NjsHandler<any>[]) {
@@ -42,6 +44,14 @@ export class Lexer implements NjsLexer, NjsTarget {
     }
   }
 
+  upLine() {
+    return ++this.line;
+  }
+
+  getLine() {
+    return this.line;
+  }
+
   run(source: string): NjsToken<any>[] {
     this.lexemes = source;
 
@@ -55,6 +65,10 @@ export class Lexer implements NjsLexer, NjsTarget {
           const descriptor = handler.read(this.visitor);
 
           if (descriptor.token) {
+            if (descriptor.token instanceof NewLineToken) {
+              this.upLine();
+            }
+
             this.tokens.push(descriptor.token);
           }
         }
