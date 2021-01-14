@@ -11,7 +11,7 @@ export class IdentifierToken extends NjsBaseToken<string> {
 
 export class IdentifierHandler extends NjsBaseHandler<string> {
   public static readonly pattern = /^[a-zA-Z]\w*$/;
-  private readonly firstLetter = /[a-zA-Z]/;
+  private readonly firstLetter = /\w/;
 
   read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
     if (this.firstLetter.test(visitor.peep())) {
@@ -21,6 +21,7 @@ export class IdentifierHandler extends NjsBaseHandler<string> {
         inner += visitor.pop();
 
         if (!IdentifierHandler.pattern.test(inner)) {
+          visitor.revert();
           return {};
         }
       }
