@@ -1,4 +1,4 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
 import {
   NjsBaseHandler,
   NjsBaseToken,
@@ -12,7 +12,7 @@ export class ServiceSymbolsToken extends NjsBaseToken<string> {
 export class ServiceSymbolsHandler extends NjsBaseHandler<string> {
   public static readonly pattern = /(?=\W)(?=\S)./;
 
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<string> {
     if (visitor.accept(ServiceSymbolsHandler.pattern)) {
       return {
         token: new ServiceSymbolsToken(visitor.pop()),

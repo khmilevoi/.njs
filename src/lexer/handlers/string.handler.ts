@@ -1,4 +1,4 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
 import { LexerError } from "../lexer.error";
 import {
   NjsBaseHandler,
@@ -21,7 +21,7 @@ export class StringToken extends NjsBaseToken<string> {
 export class StringHandler extends NjsBaseHandler<string> {
   public static readonly divider = '"';
 
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<string> {
     if (visitor.accept(StringHandler.divider)) {
       visitor.pop();
 

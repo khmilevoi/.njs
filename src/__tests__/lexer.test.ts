@@ -1,11 +1,11 @@
-import { IdentifierHandler } from "../lexer/handlers/identifier.handler";
-import { NewLineHandler } from "../lexer/handlers/new-line.handler";
-import { NumberHandler } from "../lexer/handlers/number.handler";
-import { SemicolonHandler } from "../lexer/handlers/semicolon.handler";
-import { ServiceSymbolsHandler } from "../lexer/handlers/service-symbols.handler";
-import { StringHandler } from "../lexer/handlers/string.handler";
-import { Lexer } from "../lexer/lexer";
-import { LexerError } from "../lexer/lexer.error";
+import { IdentifierHandler } from "lexer/handlers/identifier.handler";
+import { NewLineHandler } from "lexer/handlers/new-line.handler";
+import { NumberHandler } from "lexer/handlers/number.handler";
+import { SemicolonHandler } from "lexer/handlers/semicolon.handler";
+import { ServiceSymbolsHandler } from "lexer/handlers/service-symbols.handler";
+import { StringHandler } from "lexer/handlers/string.handler";
+import { Lexer } from "lexer/lexer";
+import { LexerError } from "lexer/lexer.error";
 import { loadFile } from "./utils/loadFile";
 
 describe("Lexer", () => {

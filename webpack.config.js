@@ -1,5 +1,5 @@
 const path = require("path");
-
+console.log(path.resolve("./src"));
 module.exports = {
   entry: "./src/index.ts",
   devtool: "source-map",
@@ -16,6 +16,7 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    modules: [path.resolve("./src")],
   },
   output: {
     filename: "bundle.js",

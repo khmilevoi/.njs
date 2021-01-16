@@ -1,59 +1,27 @@
 export type AcceptToken = string | RegExp;
 
-export interface NjsTarget {
-  peep(): string;
+export interface NjsTarget<Token = string> {
+  peep(): Token;
 
-  pop(): string;
+  pop(): Token;
 
   revert(amount?: number): void;
 
   getLine(): number;
 }
 
-export class NjsVisitor {
-  constructor(private readonly instance: NjsTarget) {}
+export abstract class NjsVisitor<Token = string> {
+  constructor(protected readonly instance: NjsTarget<Token>) {}
 
   getLIne() {
     return this.instance.getLine();
   }
 
-  peep(): string {
+  peep(): Token {
     return this.instance.peep();
   }
 
-  pop(): string {
+  pop(): Token {
     return this.instance.pop();
-  }
-
-  revert(amount?: number) {
-    return this.instance.revert(amount);
-  }
-
-  accept(...tokens: AcceptToken[]): boolean {
-    const lexeme = this.peep();
-
-    return tokens.some((item) => {
-      if (item instanceof RegExp && lexeme) {
-        return item.test(lexeme);
-      }
-
-      return item === lexeme;
-    });
-  }
-
-  notAccept(...tokens: AcceptToken[]): boolean {
-    return !this.accept(...tokens);
-  }
-
-  popWhileAccept(...tokens: AcceptToken[]): void {
-    while (this.accept(...tokens)) {
-      this.pop();
-    }
-  }
-
-  popWhileNotAccept(...tokens: AcceptToken[]): void {
-    while (this.notAccept(...tokens)) {
-      this.pop();
-    }
   }
 }

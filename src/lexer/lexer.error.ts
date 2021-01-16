@@ -1,4 +1,4 @@
-import { NjsError } from "../logger/types";
+import { NjsError } from "logger/types";
 
 export class LexerError extends NjsError {
   constructor(message: string, line: number) {

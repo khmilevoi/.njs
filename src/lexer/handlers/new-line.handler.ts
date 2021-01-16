@@ -1,4 +1,4 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
 import {
   NjsBaseHandler,
   NjsBaseToken,
@@ -12,7 +12,7 @@ export class NewLineToken extends NjsBaseToken<never> {
 export class NewLineHandler extends NjsBaseHandler<never> {
   public static readonly newLine = "\n";
 
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<never> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<never> {
     if (visitor.accept(NewLineHandler.newLine)) {
       visitor.pop();
 

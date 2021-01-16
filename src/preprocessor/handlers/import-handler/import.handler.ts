@@ -1,8 +1,11 @@
 import pathUtil from "path";
-import { Njs } from "../../../language/njs";
+import { Njs } from "language/njs";
 import { PreprocessorError } from "../../preprocessor.error";
 import { NjsPreprocessorHandler } from "../../types";
-import { FileLoaderVisitor } from "./file-loader.visitor";
+import {
+  ImportHandlerVisitor,
+  ImportHandlerVisitorTarget,
+} from "./import-handler.visitor";
 import { NjsFileLoader } from "./types";
 
 export class File {
@@ -21,11 +24,13 @@ export class File {
   }
 }
 
-export class ImportHandler implements NjsPreprocessorHandler {
+// todo: maybe useless, because i want modules
+export class ImportHandler
+  implements NjsPreprocessorHandler, ImportHandlerVisitorTarget {
   public static readonly firstPattern = /^(?:\s*import\s+".*"\s*;\s*)+/g;
   public static readonly secondPattern = /^\s*import\s+"(.*)"\s*;\s*$/gm;
   public readonly files: Map<string, File> = new Map<string, File>();
-  private readonly visitor = new FileLoaderVisitor(this);
+  private readonly visitor = new ImportHandlerVisitor(this);
   private readonly loaders: NjsFileLoader[] = [];
 
   constructor(...loaders: NjsFileLoader[]) {

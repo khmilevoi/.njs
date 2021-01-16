@@ -1,14 +1,14 @@
-import { Njs } from "../../../language/njs";
+import { Njs } from "language/njs";
 import { File } from "./import.handler";
 
-interface FileLoaderVisitorTarget {
+export interface ImportHandlerVisitorTarget {
   files: Map<string, File>;
 
   transform(source: string, dir: string): Promise<string>;
 }
 
-export class FileLoaderVisitor {
-  constructor(private readonly instance: FileLoaderVisitorTarget) {}
+export class ImportHandlerVisitor {
+  constructor(private readonly instance: ImportHandlerVisitorTarget) {}
 
   transform(source: string, dir: string): Promise<string> {
     return this.instance.transform(source, dir);

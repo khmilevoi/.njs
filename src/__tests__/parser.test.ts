@@ -1,4 +1,4 @@
-import { Preprocessor } from "../preprocessor/preprocessor";
+import { Preprocessor } from "preprocessor";
 import { loadFile } from "./utils/loadFile";
 
 describe("Preprocessor", () => {
