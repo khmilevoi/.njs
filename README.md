@@ -8,6 +8,8 @@
 - class
 - array (maybe generic)
 
+добавить модули
+
 хз пока что:
 
 - null
