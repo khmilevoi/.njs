@@ -1,8 +1,8 @@
 import fs from "fs/promises";
-import { NjsAstTree, NjsParser } from "parser/types";
-import path from "path";
 import { NjsLexer, NjsToken } from "lexer/types";
 import { NjsLogger } from "logger/types";
+import { NjsAstTree, NjsParser } from "parser/types";
+import path from "path";
 import { NjsPreprocessor } from "preprocessor/types";
 
 export class Njs {
@@ -23,19 +23,19 @@ export class Njs {
     return buffer.toString();
   }
 
-  private preprocessing(source: string, dir: string): Promise<string> {
+  preprocessing(source: string, dir: string): Promise<string> {
     return this.preprocessor.run(source, dir);
   }
 
-  private tokenize(source: string): NjsToken<any>[] {
+  tokenize(source: string): NjsToken<any>[] {
     return this.lexer.run(source);
   }
 
-  private parse(tokens: NjsToken<any>[]) {
+  parse(tokens: NjsToken<any>[]) {
     return this.parser.parse(tokens);
   }
 
-  private after(ast: NjsAstTree) {}
+  after(ast: NjsAstTree) {}
 
   async run(pathToFile: string) {
     try {

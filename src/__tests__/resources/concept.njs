@@ -1,4 +1,4 @@
-import "./foo.njs";
+import {foo} "./foo.njs";
 
 class A {
     a: number;
@@ -15,7 +15,7 @@ main(): number { // comment with "string"
 
     c = a.a + CONSTANT / 2;
 
-    str: string = "123" + "456";
+    str: string = "123" + foo() + "456";
 
     return 0;
 }
