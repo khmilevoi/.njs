@@ -1,4 +1,12 @@
 import { NjsToken } from "lexer/types";
-import { NjsVisitor } from "shared/visitor.shared";
+import { NjsTarget, NjsVisitor } from "shared/visitor.shared";
 
-export class ParserVisitor extends NjsVisitor<NjsToken<any>> {}
+export interface ParserTarget extends NjsTarget<NjsToken<any>> {
+  save(): void;
+}
+
+export class ParserVisitor extends NjsVisitor<NjsToken<any>> {
+  constructor(instance: ParserTarget) {
+    super(instance);
+  }
+}

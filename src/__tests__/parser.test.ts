@@ -1,9 +1,8 @@
 import { njs } from "index";
 import { Parser } from "parser";
-import { Preprocessor } from "preprocessor";
 import { loadFile } from "./utils/loadFile";
 
-describe("Preprocessor", () => {
+describe("Parser", () => {
   let source: string = "";
 
   beforeAll(async () => {

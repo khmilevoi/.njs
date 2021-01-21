@@ -1,49 +1,38 @@
 import { NjsToken } from "lexer/types";
-import { RootHandler } from "parser/handlers/instructions/root.handler";
-import { ParserVisitor } from "parser/parser.visitor";
-import { Expression } from "parser/terminals/exspression.terminal";
-import { Instruction } from "parser/terminals/instruction.terminal";
-import {
-  ExpressionHandler,
-  InstructionHandler,
-  NjaBaseParserHandler,
-  NjsAstTree,
-  NjsParser,
-} from "parser/types";
-import { NjsTarget } from "shared/visitor.shared";
+import { ParserTarget, ParserVisitor } from "parser/parser.visitor";
+import { NjsAstTree, NjsParser } from "parser/types";
 
-export class Parser implements NjsParser, NjsTarget<NjsToken<any>> {
-  private readonly handlers: NjaBaseParserHandler[] = [new RootHandler()];
+export class Parser implements NjsParser, ParserTarget {
+  private readonly handlers: any[] = [];
   private readonly visitor = new ParserVisitor(this);
+
+  private savedIterator?: number;
   private iterator = 0;
   private tokens: NjsToken<any>[] = [];
 
-  constructor(...handlers: NjaBaseParserHandler[]) {
+  constructor(...handlers: any[]) {
     this.handlers.push(...handlers);
-
-    new Expression(
-      ...this.handlers.filter((handler) => handler instanceof ExpressionHandler)
-    );
-    new Instruction(
-      ...this.handlers.filter(
-        (handler) => handler instanceof InstructionHandler
-      )
-    );
   }
 
   parse(tokens: NjsToken<any>[]): NjsAstTree {
     this.tokens = tokens;
 
-    const result = this.handlers.map((handler) => handler.handle(this.visitor));
-
-    return result as any;
+    return undefined as any;
   }
 
   getLine(): number {
     return 0;
   }
 
-  revert(amount?: number): void {}
+  save() {
+    this.savedIterator = this.iterator;
+  }
+
+  revert(amount?: number): void {
+    if (this.savedIterator != null) {
+      this.iterator = this.savedIterator;
+    }
+  }
 
   peep(): NjsToken<any> {
     return this.tokens[this.iterator];
