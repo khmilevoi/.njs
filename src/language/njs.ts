@@ -27,11 +27,11 @@ export class Njs {
     return this.preprocessor.run(source, dir);
   }
 
-  tokenize(source: string): NjsToken<any>[] {
+  tokenize(source: string): Generator<NjsToken<any>> {
     return this.lexer.run(source);
   }
 
-  parse(tokens: NjsToken<any>[]) {
+  parse(tokens: Generator<NjsToken<any>>) {
     return this.parser.parse(tokens);
   }
 
