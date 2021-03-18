@@ -36,5 +36,5 @@ export abstract class NjsBaseHandler<Inner> implements NjsHandler<Inner> {
 }
 
 export interface NjsLexer {
-  run(source: string): Generator<NjsToken<any>>;
+  run(source: string): NjsToken<any>[];
 }

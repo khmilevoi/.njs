@@ -53,13 +53,13 @@ export class Lexer implements NjsLexer, NjsTarget {
     return this.line;
   }
 
-  *run(source: string): Generator<NjsToken<any>> {
+  run(source: string): NjsToken<any>[] {
     this.lexemes = source;
 
     while (this.peep() != null) {
       const currentIterator = this.iterator;
 
-      for (const handler of this.handlers) {
+      this.handlers.forEach((handler) => {
         if (this.peep() != null) {
           this.saveIterator();
 
@@ -71,11 +71,9 @@ export class Lexer implements NjsLexer, NjsTarget {
             }
 
             this.tokens.push(descriptor.token);
-
-            yield descriptor.token;
           }
         }
-      }
+      });
 
       if (currentIterator === this.iterator) {
         this.pop();

@@ -6,17 +6,16 @@ export class Parser implements NjsParser, ParserTarget {
   private readonly handlers: any[] = [];
   private readonly visitor = new ParserVisitor(this);
 
-  private savedIterator?: Generator<NjsToken<any>>;
-  private iterator?: Generator<NjsToken<any>>;
-  private currentToken?: IteratorResult<NjsToken<any>>;
+  private savedIterator?: number;
+  private iterator = 0;
+  private tokens: NjsToken<any>[] = [];
 
   constructor(...handlers: any[]) {
     this.handlers.push(...handlers);
   }
 
-  parse(tokens: Generator<NjsToken<any>>): NjsAstTree {
-    this.iterator = tokens;
-    this.currentToken = tokens.next();
+  parse(tokens: NjsToken<any>[]): NjsAstTree {
+    this.tokens = tokens;
 
     return undefined as any;
   }
@@ -30,18 +29,20 @@ export class Parser implements NjsParser, ParserTarget {
   }
 
   revert(amount?: number): void {
-    this.iterator = this.savedIterator;
+    if (this.savedIterator != null) {
+      this.iterator = this.savedIterator;
+    }
   }
 
   peep(): NjsToken<any> {
-    return this.currentToken?.value;
+    return this.tokens[this.iterator];
   }
 
   pop(): NjsToken<any> {
-    const prev = this.currentToken?.value;
+    const prev = this.tokens[this.iterator];
 
-    if (!this.currentToken?.done) {
-      this.iterator?.next();
+    if (this.iterator < this.tokens.length) {
+      this.iterator += 1;
     }
 
     return prev;
