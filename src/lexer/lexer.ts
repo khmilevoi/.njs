@@ -1,4 +1,5 @@
-import { NjsTarget, NjsVisitor } from "../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
+import { NjsTarget } from "shared/visitor.shared";
 import { NewLineToken } from "./handlers/new-line.handler";
 import { OneLineCommentHandler } from "./handlers/one-line-comment.handler";
 import { SpaceHandler } from "./handlers/space.handler";
@@ -16,7 +17,7 @@ export class Lexer implements NjsLexer, NjsTarget {
   private savedIterator = 0;
   private iterator = 0;
   private line = 1;
-  private visitor = new NjsVisitor(this);
+  private visitor = new LexerVisitor(this);
 
   constructor(...handlers: NjsHandler<any>[]) {
     this.handlers = [...Lexer.defaultHandlers, ...handlers];

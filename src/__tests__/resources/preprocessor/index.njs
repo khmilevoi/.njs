@@ -1,7 +1,7 @@
 import "./foo.njs";
 import "./foo1.njs";
 import "./foo2.njs";
-import "./foo3.njs";
+import "./bar/foo3.njs";
 
 class A {
     number a;

@@ -1,8 +1,8 @@
-import { ImportHandler } from "../preprocessor/handlers/file-loader/import.handler";
-import { NjsLoader } from "../preprocessor/handlers/file-loader/loaders/njs.loader";
-import { Preprocessor } from "../preprocessor/preprocessor";
-import { PreprocessorError } from "../preprocessor/preprocessor.error";
-import { rootPath } from "../rootPath";
+import { ImportHandler } from "preprocessor/handlers/import-handler";
+import { NjsLoader } from "preprocessor/handlers/import-handler/loaders/njs.loader";
+import { Preprocessor } from "preprocessor";
+import { PreprocessorError } from "preprocessor/preprocessor.error";
+import { rootPath } from "rootPath";
 import { loadFile } from "./utils/loadFile";
 
 describe("Preprocessor", () => {

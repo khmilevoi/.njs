@@ -1,4 +1,4 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
 import {
   NjsBaseHandler,
   NjsBaseToken,
@@ -14,7 +14,7 @@ export class NumberHandler extends NjsBaseHandler<number> {
 
   private readonly digit = /\d|\./;
 
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<number> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<number> {
     if (this.digit.test(visitor.peep())) {
       let inner = visitor.pop();
 

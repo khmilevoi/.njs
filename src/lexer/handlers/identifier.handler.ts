@@ -1,4 +1,4 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
 import {
   NjsBaseHandler,
   NjsBaseToken,
@@ -13,7 +13,7 @@ export class IdentifierHandler extends NjsBaseHandler<string> {
   public static readonly pattern = /^[a-zA-Z]\w*$/;
   private readonly firstLetter = /\w/;
 
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<string> {
     if (this.firstLetter.test(visitor.peep())) {
       let inner = "";
 

@@ -1,11 +1,11 @@
-import { NjsVisitor } from "../../shared/visitor.shared";
+import { LexerVisitor } from "lexer/lexer.visitor";
 import { NjsBaseHandler, NjsLexerHandlerLexemeDescriptor } from "../types";
 
 export class OneLineCommentHandler extends NjsBaseHandler<string> {
   public static readonly start = "//";
   public static readonly end = "\n";
 
-  read(visitor: NjsVisitor): NjsLexerHandlerLexemeDescriptor<string> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<string> {
     if (visitor.pop().concat(visitor.peep()) === OneLineCommentHandler.start) {
       visitor.pop();
 

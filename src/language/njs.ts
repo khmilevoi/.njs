@@ -1,14 +1,16 @@
 import fs from "fs/promises";
+import { NjsLexer, NjsToken } from "lexer/types";
+import { NjsLogger } from "logger/types";
+import { NjsAstTree, NjsParser } from "parser/types";
 import path from "path";
-import { NjsLexer, NjsToken } from "../lexer/types";
-import { NjsLogger } from "../logger/types";
-import { NjsPreprocessor } from "../preprocessor/types";
+import { NjsPreprocessor } from "preprocessor/types";
 
 export class Njs {
   constructor(
     private readonly logger: NjsLogger,
     private readonly preprocessor: NjsPreprocessor,
-    private readonly lexer: NjsLexer
+    private readonly lexer: NjsLexer,
+    private readonly parser: NjsParser
   ) {}
 
   static randomKey() {
@@ -21,17 +23,19 @@ export class Njs {
     return buffer.toString();
   }
 
-  private preprocessing(source: string, dir: string): Promise<string> {
+  preprocessing(source: string, dir: string): Promise<string> {
     return this.preprocessor.run(source, dir);
   }
 
-  private tokenize(source: string): NjsToken<any>[] {
+  tokenize(source: string): Generator<NjsToken<any>> {
     return this.lexer.run(source);
   }
 
-  private parse(tokens: NjsToken<any>[]) {}
+  parse(tokens: Generator<NjsToken<any>>) {
+    return this.parser.parse(tokens);
+  }
 
-  private after(ast: any) {}
+  after(ast: NjsAstTree) {}
 
   async run(pathToFile: string) {
     try {
