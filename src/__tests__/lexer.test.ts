@@ -18,7 +18,7 @@ describe("Lexer", () => {
   it("should tokenize identifiers", function () {
     const lexer = new Lexer(new IdentifierHandler());
 
-    const tokens = [...lexer.run(source)];
+    const tokens = lexer.run(source);
 
     expect(
       tokens.every((item) => IdentifierHandler.pattern.test(item.inner))
@@ -27,7 +27,7 @@ describe("Lexer", () => {
   it("should tokenize semicolon and new line", function () {
     const lexer = new Lexer(new SemicolonHandler(), new NewLineHandler());
 
-    const tokens = [...lexer.run(source)];
+    const tokens = lexer.run(source);
 
     const expectedLength =
       (source.match(/;/g)?.length ?? 0) + (source.match(/\n/g)?.length ?? 0);
@@ -38,7 +38,7 @@ describe("Lexer", () => {
   it("should tokenize semicolon and new line with service symbols", function () {
     const lexer = new Lexer(new ServiceSymbolsHandler());
 
-    const tokens = [...lexer.run(source)];
+    const tokens = lexer.run(source);
 
     expect(tokens).toHaveLength(36);
   });
@@ -46,7 +46,7 @@ describe("Lexer", () => {
   it("should tokenize numbers", function () {
     const lexer = new Lexer(new NumberHandler());
 
-    const tokens = [...lexer.run(source)];
+    const tokens = lexer.run(source);
 
     expect(tokens).toHaveLength(6);
   });
@@ -54,7 +54,7 @@ describe("Lexer", () => {
   it("should tokenize strings", function () {
     const lexer = new Lexer(new StringHandler());
 
-    const tokens = [...lexer.run(source)];
+    const tokens = lexer.run(source);
 
     expect(tokens).toHaveLength(3);
   });
@@ -67,8 +67,7 @@ describe("Lexer", () => {
     let error: LexerError | null = null;
 
     try {
-      for (const l of lexer.run(source)) {
-      }
+      lexer.run(source);
     } catch (e) {
       error = e;
     }
@@ -93,7 +92,7 @@ describe("Lexer", () => {
       new NumberHandler()
     );
 
-    const tokens = [...lexer.run(source)];
+    const tokens = lexer.run(source);
 
     const result = tokens
       .map((token) => token.toString())
