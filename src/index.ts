@@ -7,13 +7,11 @@ import { Lexer } from "lexer/lexer";
 import { Logger } from "logger/logger";
 import { Parser } from "parser";
 import { Preprocessor } from "preprocessor";
-import { ImportHandler } from "preprocessor/handlers/import-handler";
-import { NjsLoader } from "preprocessor/handlers/import-handler/loaders/njs.loader";
 import { rootPath } from "rootPath";
 
 export const njs = new Njs(
   new Logger(),
-  new Preprocessor(new ImportHandler(new NjsLoader())),
+  new Preprocessor(),
   new Lexer(
     new StringHandler(),
     new IdentifierHandler(),
