@@ -64,7 +64,5 @@ describe("Parser", () => {
     const parser = new Parser(new AssignTerminal());
 
     const result = parser.parse(tokens);
-
-    console.log(result);
   });
 });
