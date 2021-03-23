@@ -5,3 +5,5 @@ export interface NjsAstTree {}
 export interface NjsParser {
   parse(tokens: NjsToken<any>[]): NjsAstTree;
 }
+
+export interface NjsParserHandler {}

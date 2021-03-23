@@ -45,7 +45,7 @@ export class Lexer implements NjsLexer, NjsTarget {
     }
   }
 
-  upLine() {
+  increaseLine() {
     return ++this.line;
   }
 
@@ -67,7 +67,7 @@ export class Lexer implements NjsLexer, NjsTarget {
 
           if (descriptor.token) {
             if (descriptor.token instanceof NewLineToken) {
-              this.upLine();
+              this.increaseLine();
             }
 
             this.tokens.push(descriptor.token);

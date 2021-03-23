@@ -1,16 +1,16 @@
 import { NjsToken } from "lexer/types";
 import { ParserTarget, ParserVisitor } from "parser/parser.visitor";
-import { NjsAstTree, NjsParser } from "parser/types";
+import { NjsAstTree, NjsParser, NjsParserHandler } from "parser/types";
 
 export class Parser implements NjsParser, ParserTarget {
-  private readonly handlers: any[] = [];
+  private readonly handlers: NjsParserHandler[] = [];
   private readonly visitor = new ParserVisitor(this);
 
   private savedIterator?: number;
   private iterator = 0;
   private tokens: NjsToken<any>[] = [];
 
-  constructor(...handlers: any[]) {
+  constructor(...handlers: NjsParserHandler[]) {
     this.handlers.push(...handlers);
   }
 
