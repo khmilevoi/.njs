@@ -8,7 +8,6 @@
     "start": "node ./dist/bundle.js",
     "watch": "webpack --watch",
     "test": "jest --collect-coverage",
-    "postinstall": "npx typesync"
   },
   "keywords": [],
   "author": "",
