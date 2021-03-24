@@ -1,6 +1,7 @@
 import { njs } from "index";
 import { NjsToken } from "lexer/types";
 import { Parser } from "parser";
+import { OrHelper } from "parser/helpers/or.helper";
 import {
   NjsAstNode,
   NjsBaseTerminal,
@@ -30,7 +31,7 @@ class ValueTerminal extends NjsBaseTerminal {
 }
 
 class VariableTerminal extends NjsBaseTerminal {
-  grammar = [/\w+/, ":", /\w+/];
+  grammar = [/\w+/, ":", new OrHelper("number", "string")];
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
     const [name, , type] = items as [
@@ -64,5 +65,17 @@ describe("Parser", () => {
     const parser = new Parser(new AssignTerminal());
 
     const result = parser.parse(tokens);
+
+    console.log(result);
+  });
+
+  it("should 1", async function () {
+    const tokens = njs.tokenize("foo: string = 100");
+
+    const parser = new Parser(new AssignTerminal());
+
+    const result = parser.parse(tokens);
+
+    console.log(result);
   });
 });

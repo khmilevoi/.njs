@@ -7,7 +7,6 @@ import { Lexer } from "lexer/lexer";
 import { Logger } from "logger/logger";
 import { Parser } from "parser";
 import { Preprocessor } from "preprocessor";
-import { rootPath } from "rootPath";
 
 export const njs = new Njs(
   new Logger(),
@@ -20,5 +19,3 @@ export const njs = new Njs(
   ),
   new Parser()
 );
-
-njs.run(`${rootPath}/__tests__/resources/preprocessor/index.njs`);

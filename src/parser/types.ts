@@ -1,7 +1,9 @@
 import { NjsToken } from "lexer/types";
 import { ParserVisitor } from "parser/parser.visitor";
 
-export interface NjsAstTree {}
+export interface NjsAstTree {
+  root: NjsAstNode;
+}
 
 export interface NjsAstNode {}
 

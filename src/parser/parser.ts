@@ -1,7 +1,7 @@
 import { NjsToken } from "lexer/types";
 import { OrHelper } from "parser/helpers/or.helper";
 import { ParserTarget, ParserVisitor } from "parser/parser.visitor";
-import { NjsAstTree, NjsParser, NjsTerminal } from "parser/types";
+import { NjsAstNode, NjsAstTree, NjsParser, NjsTerminal } from "parser/types";
 
 export class Parser implements NjsParser, ParserTarget {
   private readonly handler: NjsTerminal;
@@ -18,7 +18,11 @@ export class Parser implements NjsParser, ParserTarget {
   parse(tokens: NjsToken<any>[]): NjsAstTree {
     this.tokens = tokens;
 
-    return this.handler.handle(this.visitor) as any;
+    const root = this.handler.handle(this.visitor);
+
+    return {
+      root: root ?? new (class implements NjsAstNode {})(),
+    };
   }
 
   getLine(): number {

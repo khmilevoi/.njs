@@ -12,7 +12,7 @@ export class Lexer implements NjsLexer, NjsTarget {
   ];
   private readonly handlers: NjsHandler<any>[];
 
-  private readonly tokens: NjsToken<any>[] = [];
+  private tokens: NjsToken<any>[] = [];
   private lexemes: string = "";
   private savedIterator = 0;
   private iterator = 0;
@@ -55,6 +55,10 @@ export class Lexer implements NjsLexer, NjsTarget {
 
   run(source: string): NjsToken<any>[] {
     this.lexemes = source;
+    this.tokens = [];
+    this.iterator = 0;
+    this.savedIterator = this.iterator;
+    this.line = 1;
 
     while (this.peep() != null) {
       const currentIterator = this.iterator;

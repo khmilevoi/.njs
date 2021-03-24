@@ -19,7 +19,7 @@ export class OrHelper extends NjsBaseTerminal {
     for (let handler of this.handlers) {
       const result = this.evaluateHandler(handler, visitor);
 
-      if (handler) {
+      if (result) {
         return result;
       }
     }
