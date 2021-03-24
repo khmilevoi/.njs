@@ -2,7 +2,7 @@ import { LexerVisitor } from "lexer/lexer.visitor";
 
 export interface NjsToken<Inner> {
   readonly type: string;
-  readonly inner?: Inner;
+  readonly inner: Inner;
 
   toString(): string;
 }
@@ -10,7 +10,7 @@ export interface NjsToken<Inner> {
 export abstract class NjsBaseToken<Inner> implements NjsToken<Inner> {
   abstract readonly type: string = "base";
 
-  constructor(public readonly inner?: Inner) {}
+  constructor(public readonly inner: Inner) {}
 
   toString(): string {
     return `${this.inner}`;
