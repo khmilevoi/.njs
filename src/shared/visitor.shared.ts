@@ -13,7 +13,7 @@ export interface NjsTarget<Token = string> {
 export abstract class NjsVisitor<Token = string> {
   constructor(protected readonly instance: NjsTarget<Token>) {}
 
-  getLIne() {
+  getLine() {
     return this.instance.getLine();
   }
 
@@ -23,5 +23,9 @@ export abstract class NjsVisitor<Token = string> {
 
   pop(): Token {
     return this.instance.pop();
+  }
+
+  revert(amount?: number): void {
+    return this.instance.revert(amount);
   }
 }

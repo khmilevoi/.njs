@@ -7,8 +7,7 @@
     "build": "webpack",
     "start": "node ./dist/bundle.js",
     "watch": "webpack --watch",
-    "test": "jest --collect-coverage",
-    "postinstall": "npx typesync"
+    "test": "jest --collect-coverage"
   },
   "keywords": [],
   "author": "",

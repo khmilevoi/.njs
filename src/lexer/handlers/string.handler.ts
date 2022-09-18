@@ -27,7 +27,7 @@ export class StringHandler extends NjsBaseHandler<string> {
 
       let inner = "";
 
-      const startLine = visitor.getLIne();
+      const startLine = visitor.getLine();
 
       while (visitor.notAccept(StringHandler.divider)) {
         if (visitor.peep() == null) {
