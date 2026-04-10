@@ -22,12 +22,16 @@ export interface NjsTerminal {
 export type NjsParserHandledItem = NjsToken<any> | NjsAstNode;
 
 export abstract class NjsBaseTerminal implements NjsTerminal {
-  readonly grammar: NjsGrammarItem[] = [];
+  get grammar(): NjsGrammarItem[] {
+    return [];
+  }
 
   private visitor!: ParserVisitor;
 
   handle(visitor: ParserVisitor): NjsAstNode | null {
     const result: NjsParserHandledItem[] = [];
+
+    visitor.save(); // Save iterator position before applying grammar items
 
     for (const item of this.grammar) {
       const handled = this.evaluateHandler(item, visitor);
@@ -35,19 +39,20 @@ export abstract class NjsBaseTerminal implements NjsTerminal {
       if (handled) {
         result.push(handled);
       } else {
-        visitor.revert();
-
+        visitor.revert(); // Revert to the saved state and pop the stack
         return null;
       }
     }
 
+    visitor.discard(); // Pop the saved state because we succeeded
     return this.parse(result);
   }
 
   protected abstract parse(items: NjsParserHandledItem[]): NjsAstNode;
 
   private handleRegExp(handler: RegExp) {
-    if (handler.test(this.visitor.peep().inner.toString())) {
+    const token = this.visitor.peep();
+    if (token && token.inner != null && handler.test(token.inner.toString())) {
       return this.visitor.pop();
     }
 
@@ -55,7 +60,8 @@ export abstract class NjsBaseTerminal implements NjsTerminal {
   }
 
   private handleString(handler: string) {
-    if (handler === this.visitor.peep().inner.toString()) {
+    const token = this.visitor.peep();
+    if (token && token.inner != null && handler === token.inner.toString()) {
       return this.visitor.pop();
     }
 
