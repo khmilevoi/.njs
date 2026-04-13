@@ -22,7 +22,9 @@ class Assign implements NjsAstNode {
 }
 
 class ValueTerminal extends NjsBaseTerminal {
-  grammar = [/\S+/];
+  get grammar() {
+    return [/\S+/];
+  }
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
     const [value] = items as [NjsToken<any>];
@@ -32,7 +34,9 @@ class ValueTerminal extends NjsBaseTerminal {
 }
 
 class VariableTerminal extends NjsBaseTerminal {
-  grammar = [/\w+/, ":", new OrHelper("number", "string")];
+  get grammar() {
+    return [/\w+/, ":", new OrHelper("number", "string")];
+  }
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
     const [name, , type] = items as [
@@ -46,7 +50,9 @@ class VariableTerminal extends NjsBaseTerminal {
 }
 
 class AssignTerminal extends NjsBaseTerminal {
-  grammar = [new VariableTerminal(), "=", new ValueTerminal(), ";"];
+  get grammar() {
+    return [new VariableTerminal(), "=", new ValueTerminal(), ";"];
+  }
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
     const [variable, , value] = items as [Variable, string, Value];
@@ -54,8 +60,11 @@ class AssignTerminal extends NjsBaseTerminal {
     return new Assign(variable, value);
   }
 }
+
 class ExpressionTerminal extends NjsBaseTerminal {
-  grammar = [new OrHelper(new AssignTerminal(), new ValueTerminal())];
+  get grammar() {
+    return [new OrHelper(new AssignTerminal(), new ValueTerminal())];
+  }
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
     const [extension] = items;
@@ -65,7 +74,9 @@ class ExpressionTerminal extends NjsBaseTerminal {
 }
 
 class InstructionTerminal extends NjsBaseTerminal {
-  gramar = [new OrHelper(new AssignTerminal(), new ConditionTerminal())];
+  get grammar() {
+    return [new OrHelper(new AssignTerminal(), new ConditionTerminal())];
+  }
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
     const [instruction] = items;
@@ -82,15 +93,17 @@ class Condition implements NjsAstNode {
 }
 
 class ConditionTerminal extends NjsBaseTerminal {
-  grammar: NjsGrammarItem[] = [
-    "if",
-    "(",
-    new ExpressionTerminal(),
-    ")",
-    "{",
-    new InstructionTerminal(),
-    "}",
-  ];
+  get grammar(): NjsGrammarItem[] {
+    return [
+      "if",
+      "(",
+      new ExpressionTerminal(),
+      ")",
+      "{",
+      new InstructionTerminal(),
+      "}",
+    ];
+  }
 
   protected parse(items: NjsParserHandledItem[]): Condition {
     const [, , expression, , instruction] = items;

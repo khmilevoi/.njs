@@ -7,7 +7,7 @@ export class Parser implements NjsParser, ParserTarget {
   private readonly handler: NjsTerminal;
   private readonly visitor = new ParserVisitor(this);
 
-  private savedIterator?: number;
+  private iteratorStack: number[] = [];
   private iterator = 0;
   private tokens: NjsToken<any>[] = [];
 
@@ -30,12 +30,21 @@ export class Parser implements NjsParser, ParserTarget {
   }
 
   save() {
-    this.savedIterator = this.iterator;
+    this.iteratorStack.push(this.iterator);
+  }
+
+  discard() {
+    if (this.iteratorStack.length > 0) {
+      this.iteratorStack.pop();
+    }
   }
 
   revert(amount?: number): void {
-    if (this.savedIterator != null) {
-      this.iterator = this.savedIterator;
+    if (amount != null) {
+      this.iterator -= amount;
+      if (this.iterator < 0) this.iterator = 0;
+    } else if (this.iteratorStack.length > 0) {
+      this.iterator = this.iteratorStack.pop() as number;
     }
   }
 

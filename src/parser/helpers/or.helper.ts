@@ -48,6 +48,7 @@ export class LoopHelper extends NjsBaseTerminal {
   }
 
   handle(visitor: ParserVisitor): LoopNode {
+    this.nodes = []; // Reset nodes on every handle call to prevent state leakage across parses
     return this.loop(visitor);
   }
 
