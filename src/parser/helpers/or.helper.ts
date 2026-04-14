@@ -1,10 +1,5 @@
 import { ParserVisitor } from "parser/parser.visitor";
-import {
-  NjsAstNode,
-  NjsBaseTerminal,
-  NjsGrammarItem,
-  NjsParserHandledItem,
-} from "parser/types";
+import { NjsAstNode, NjsBaseTerminal, NjsGrammarItem, NjsParserHandledItem } from "parser/types";
 
 export class OrHelper extends NjsBaseTerminal {
   private readonly handlers: NjsGrammarItem[];
@@ -59,10 +54,7 @@ export class LoopHelper extends NjsBaseTerminal {
       return new LoopNode(this.nodes);
     }
 
-    const result = this.evaluateHandler(
-      new OrHelper(...this.handlers),
-      visitor
-    );
+    const result = this.evaluateHandler(new OrHelper(...this.handlers), visitor);
 
     if (result == null) {
       return new LoopNode(this.nodes);

@@ -9,9 +9,8 @@ export class Preprocessor implements NjsPreprocessor {
 
   async run(source: string, dir: string): Promise<string> {
     const handler = this.handlers.reduce(
-      (func, current) => async (origin: string) =>
-        current.transform(await func(origin), dir),
-      async (s: string): Promise<string> => s
+      (func, current) => async (origin: string) => current.transform(await func(origin), dir),
+      async (s: string): Promise<string> => s,
     );
 
     return await handler(source);

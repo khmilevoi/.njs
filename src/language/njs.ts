@@ -10,7 +10,7 @@ export class Njs {
     private readonly logger: NjsLogger,
     private readonly preprocessor: NjsPreprocessor,
     private readonly lexer: NjsLexer,
-    private readonly parser: NjsParser
+    private readonly parser: NjsParser,
   ) {}
 
   static randomKey() {

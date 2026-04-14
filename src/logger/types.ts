@@ -2,7 +2,7 @@ export class NjsError extends Error {
   constructor(
     public readonly source: string,
     message: string,
-    public readonly line?: number
+    public readonly line?: number,
   ) {
     super("");
 

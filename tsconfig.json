@@ -10,15 +10,10 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "outDir": "./dist/",
-    "rootDirs": [
-      "src/",
-      "tests/"
-    ],
+    "rootDirs": ["src/", "tests/"],
     "allowJs": true,
     "baseUrl": "src",
     "target": "ES2022"
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
