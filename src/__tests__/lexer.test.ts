@@ -102,4 +102,74 @@ describe("Lexer", () => {
 
     expect(result).toBe(expected);
   });
+
+  it("should skip unknown characters", function () {
+    const lexer = new Lexer(new IdentifierHandler(), new NumberHandler());
+    const tokens = lexer.run("abc ^ 123 % def");
+
+    expect(tokens).toHaveLength(3);
+    expect(tokens[0].type).toBe("identifier");
+    expect(tokens[0].inner).toBe("abc");
+    expect(tokens[1].type).toBe("number");
+    expect(tokens[1].inner).toBe(123);
+    expect(tokens[2].type).toBe("identifier");
+    expect(tokens[2].inner).toBe("def");
+  });
+
+  it("should handle invalid numbers gracefully", function () {
+    const lexer = new Lexer(new NumberHandler(), new IdentifierHandler());
+    const tokens = lexer.run("123.456.789");
+
+    expect(Array.isArray(tokens)).toBeTruthy();
+  });
+
+  it("should return empty object on reverted identifier", function () {
+    const handler = new IdentifierHandler();
+    const lexer = new Lexer(handler);
+    const tokens = lexer.run("123");
+
+    expect(tokens).toHaveLength(0);
+  });
+
+  it("should handle mixed expressions correctly", function () {
+    const lexer = new Lexer(
+      new NumberHandler(),
+      new IdentifierHandler(),
+      new StringHandler(),
+      new SemicolonHandler(),
+      new ServiceSymbolsHandler(),
+      new NewLineHandler()
+    );
+    const tokens = lexer.run(`let a = 123;\n// a comment\n"hello"`);
+
+    expect(tokens).toHaveLength(8);
+    expect(tokens[0].type).toBe("identifier");
+    expect(tokens[0].inner).toBe("let");
+    expect(tokens[2].type).toBe("service-symbol");
+    expect(tokens[2].inner).toBe("=");
+    expect(tokens[3].type).toBe("number");
+    expect(tokens[3].inner).toBe(123);
+    expect(tokens[4].type).toBe("semicolon");
+    expect(tokens[5].type).toBe("new-line");
+    expect(tokens[6].type).toBe("new-line");
+    expect(tokens[7].type).toBe("string");
+    expect(tokens[7].inner).toBe("hello");
+  });
+
+  it("should accurately track line numbers", function () {
+    const lexer = new Lexer(new NewLineHandler(), new StringHandler());
+    lexer.run(`\n\n\n`);
+    expect(lexer.getLine()).toBe(4);
+
+    const lexer2 = new Lexer(new NewLineHandler(), new StringHandler());
+    let error: LexerError | null = null;
+    try {
+      lexer2.run(`\n\n"unclosed string`);
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).not.toBeNull();
+    expect(error?.line).toBe(3);
+  });
 });
