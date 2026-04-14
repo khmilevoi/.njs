@@ -1,23 +1,28 @@
 import { NjsToken } from "lexer/types";
+import { OrHelper } from "parser/helpers/or.helper";
 import { ParserTarget, ParserVisitor } from "parser/parser.visitor";
-import { NjsAstTree, NjsParser } from "parser/types";
+import { NjsAstNode, NjsAstTree, NjsParser, NjsTerminal } from "parser/types";
 
 export class Parser implements NjsParser, ParserTarget {
-  private readonly handlers: any[] = [];
+  private readonly handler: NjsTerminal;
   private readonly visitor = new ParserVisitor(this);
 
-  private savedIterator?: number;
+  private iteratorStack: number[] = [];
   private iterator = 0;
   private tokens: NjsToken<any>[] = [];
 
-  constructor(...handlers: any[]) {
-    this.handlers.push(...handlers);
+  constructor(...handlers: NjsTerminal[]) {
+    this.handler = new OrHelper(...handlers);
   }
 
   parse(tokens: NjsToken<any>[]): NjsAstTree {
     this.tokens = tokens;
 
-    return undefined as any;
+    const root = this.handler.handle(this.visitor);
+
+    return {
+      root: root ?? new (class implements NjsAstNode {})(),
+    };
   }
 
   getLine(): number {
@@ -25,12 +30,21 @@ export class Parser implements NjsParser, ParserTarget {
   }
 
   save() {
-    this.savedIterator = this.iterator;
+    this.iteratorStack.push(this.iterator);
+  }
+
+  discard() {
+    if (this.iteratorStack.length > 0) {
+      this.iteratorStack.pop();
+    }
   }
 
   revert(amount?: number): void {
-    if (this.savedIterator != null) {
-      this.iterator = this.savedIterator;
+    if (amount != null) {
+      this.iterator -= amount;
+      if (this.iterator < 0) this.iterator = 0;
+    } else if (this.iteratorStack.length > 0) {
+      this.iterator = this.iteratorStack.pop() as number;
     }
   }
 

@@ -5,14 +5,18 @@ import {
   NjsLexerHandlerLexemeDescriptor,
 } from "../types";
 
-export class SemicolonToken extends NjsBaseToken<never> {
+export class SemicolonToken extends NjsBaseToken<undefined> {
   readonly type = "semicolon";
+
+  constructor() {
+    super(undefined);
+  }
 }
 
-export class SemicolonHandler extends NjsBaseHandler<never> {
+export class SemicolonHandler extends NjsBaseHandler<undefined> {
   public static readonly semicolon = ";";
 
-  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<never> {
+  read(visitor: LexerVisitor): NjsLexerHandlerLexemeDescriptor<undefined> {
     if (visitor.accept(SemicolonHandler.semicolon)) {
       visitor.pop();
 
