@@ -21,4 +21,4 @@ export const njs = new Njs(
   new Parser()
 );
 
-njs.run(`${rootPath}/__tests__/resources/preprocessor/index.njs`);
+njs.run(`${rootPath}/__tests__/resources/concept.njs`);

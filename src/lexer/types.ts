@@ -8,7 +8,7 @@ export interface NjsToken<Inner> {
 }
 
 export abstract class NjsBaseToken<Inner> implements NjsToken<Inner> {
-  abstract readonly type: string = "base";
+  abstract readonly type: string;
 
   constructor(public readonly inner?: Inner) {}
 
