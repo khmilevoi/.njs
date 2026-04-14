@@ -2,15 +2,13 @@ import { njs } from "index";
 import { NjsToken } from "lexer/types";
 import { Parser } from "parser";
 import { OrHelper, LoopHelper } from "parser/helpers/or.helper";
-import {
-  NjsAstNode,
-  NjsBaseTerminal,
-  NjsGrammarItem,
-  NjsParserHandledItem,
-} from "parser/types";
+import { NjsAstNode, NjsBaseTerminal, NjsGrammarItem, NjsParserHandledItem } from "parser/types";
 
 class Variable implements NjsAstNode {
-  constructor(readonly name: string, readonly type: string) {}
+  constructor(
+    readonly name: string,
+    readonly type: string,
+  ) {}
 }
 
 class Value implements NjsAstNode {
@@ -18,7 +16,10 @@ class Value implements NjsAstNode {
 }
 
 class Assign implements NjsAstNode {
-  constructor(readonly variable: Variable, readonly value: Value) {}
+  constructor(
+    readonly variable: Variable,
+    readonly value: Value,
+  ) {}
 }
 
 class ValueTerminal extends NjsBaseTerminal {
@@ -39,11 +40,7 @@ class VariableTerminal extends NjsBaseTerminal {
   }
 
   protected parse(items: NjsParserHandledItem[]): NjsAstNode {
-    const [name, , type] = items as [
-      NjsToken<string>,
-      string,
-      NjsToken<string>
-    ];
+    const [name, , type] = items as [NjsToken<string>, string, NjsToken<string>];
 
     return new Variable(name.inner, type.inner);
   }
@@ -88,21 +85,13 @@ class InstructionTerminal extends NjsBaseTerminal {
 class Condition implements NjsAstNode {
   constructor(
     readonly condition: NjsAstNode,
-    readonly instruction: NjsAstNode
+    readonly instruction: NjsAstNode,
   ) {}
 }
 
 class ConditionTerminal extends NjsBaseTerminal {
   get grammar(): NjsGrammarItem[] {
-    return [
-      "if",
-      "(",
-      new ExpressionTerminal(),
-      ")",
-      "{",
-      new InstructionTerminal(),
-      "}",
-    ];
+    return ["if", "(", new ExpressionTerminal(), ")", "{", new InstructionTerminal(), "}"];
   }
 
   protected parse(items: NjsParserHandledItem[]): Condition {
@@ -132,7 +121,7 @@ describe("Parser", () => {
   });
 
   it("should parse string variable assignment correctly", async function () {
-    const tokens = njs.tokenize("foo: string = \"str value\";");
+    const tokens = njs.tokenize('foo: string = "str value";');
 
     const parser = new Parser(new AssignTerminal());
 

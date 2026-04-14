@@ -1,4 +1,4 @@
-import * as path from "path";
+import path from "path";
 import { Njs } from "language/njs";
 
 export const loadFile = (pathToFile: string) => {

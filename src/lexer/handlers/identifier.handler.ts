@@ -1,9 +1,5 @@
 import { LexerVisitor } from "lexer/lexer.visitor";
-import {
-  NjsBaseHandler,
-  NjsBaseToken,
-  NjsLexerHandlerLexemeDescriptor,
-} from "../types";
+import { NjsBaseHandler, NjsBaseToken, NjsLexerHandlerLexemeDescriptor } from "../types";
 
 export class IdentifierToken extends NjsBaseToken<string> {
   readonly type = "identifier";

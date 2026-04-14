@@ -15,7 +15,7 @@ export const njs = new Njs(
     new StringHandler(),
     new IdentifierHandler(),
     new ServiceSymbolsHandler(),
-    new NumberHandler()
+    new NumberHandler(),
   ),
-  new Parser()
+  new Parser(),
 );

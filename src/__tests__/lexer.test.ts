@@ -20,17 +20,14 @@ describe("Lexer", () => {
 
     const tokens = lexer.run(source);
 
-    expect(
-      tokens.every((item) => IdentifierHandler.pattern.test(item.inner))
-    ).toBeTruthy();
+    expect(tokens.every((item) => IdentifierHandler.pattern.test(item.inner))).toBeTruthy();
   });
   it("should tokenize semicolon and new line", function () {
     const lexer = new Lexer(new SemicolonHandler(), new NewLineHandler());
 
     const tokens = lexer.run(source);
 
-    const expectedLength =
-      (source.match(/;/g)?.length ?? 0) + (source.match(/\n/g)?.length ?? 0);
+    const expectedLength = (source.match(/;/g)?.length ?? 0) + (source.match(/\n/g)?.length ?? 0);
 
     expect(tokens).toHaveLength(expectedLength);
   });
@@ -89,7 +86,7 @@ describe("Lexer", () => {
       new StringHandler(),
       new IdentifierHandler(),
       new ServiceSymbolsHandler(),
-      new NumberHandler()
+      new NumberHandler(),
     );
 
     const tokens = lexer.run(source);
@@ -138,7 +135,7 @@ describe("Lexer", () => {
       new StringHandler(),
       new SemicolonHandler(),
       new ServiceSymbolsHandler(),
-      new NewLineHandler()
+      new NewLineHandler(),
     );
     const tokens = lexer.run(`let a = 123;\n// a comment\n"hello"`);
 

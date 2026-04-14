@@ -1,10 +1,6 @@
 import { LexerVisitor } from "lexer/lexer.visitor";
 import { LexerError } from "../lexer.error";
-import {
-  NjsBaseHandler,
-  NjsBaseToken,
-  NjsLexerHandlerLexemeDescriptor,
-} from "../types";
+import { NjsBaseHandler, NjsBaseToken, NjsLexerHandlerLexemeDescriptor } from "../types";
 
 export class StringToken extends NjsBaseToken<string> {
   readonly type = "string";
