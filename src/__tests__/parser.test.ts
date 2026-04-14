@@ -106,7 +106,7 @@ class ConditionTerminal extends NjsBaseTerminal {
   }
 
   protected parse(items: NjsParserHandledItem[]): Condition {
-    const [, , expression, , instruction] = items;
+    const [, , expression, , , instruction] = items;
 
     return new Condition(expression, instruction);
   }
@@ -117,27 +117,35 @@ describe("Parser", () => {
 
   beforeAll(async () => {});
 
-  it("should", async function () {
-    const tokens = njs.tokenize("foo: number = 100");
+  it("should parse number variable assignment correctly", async function () {
+    const tokens = njs.tokenize("foo: number = 100;");
 
     const parser = new Parser(new AssignTerminal());
 
     const result = parser.parse(tokens);
 
-    console.log(result);
+    expect(result.root).toBeInstanceOf(Assign);
+    const assign = result.root as Assign;
+    expect(assign.variable.name).toBe("foo");
+    expect(assign.variable.type).toBe("number");
+    expect(assign.value.value.inner).toBe(100);
   });
 
-  it("should 1", async function () {
-    const tokens = njs.tokenize("foo: string = 100");
+  it("should parse string variable assignment correctly", async function () {
+    const tokens = njs.tokenize("foo: string = \"str value\";");
 
     const parser = new Parser(new AssignTerminal());
 
     const result = parser.parse(tokens);
 
-    console.log(result);
+    expect(result.root).toBeInstanceOf(Assign);
+    const assign = result.root as Assign;
+    expect(assign.variable.name).toBe("foo");
+    expect(assign.variable.type).toBe("string");
+    expect(assign.value.value.inner).toBe("str value");
   });
 
-  it("should 2", async function () {
+  it("should parse multiple variable assignments using LoopHelper", async function () {
     const tokens = njs.tokenize(`
     foo: string = "str value";
     foo1: string = "str value 2";
@@ -147,14 +155,28 @@ describe("Parser", () => {
 
     const result = parser.parse(tokens);
 
-    console.log(result);
+    expect(result.root).toBeDefined();
+    const root = result.root as any;
+    expect(root.nodes).toBeDefined();
+    expect(root.nodes).toHaveLength(2);
+
+    const firstAssign = root.nodes[0] as Assign;
+    expect(firstAssign).toBeInstanceOf(Assign);
+    expect(firstAssign.variable.name).toBe("foo");
+    expect(firstAssign.variable.type).toBe("string");
+    expect(firstAssign.value.value.inner).toBe("str value");
+
+    const secondAssign = root.nodes[1] as Assign;
+    expect(secondAssign).toBeInstanceOf(Assign);
+    expect(secondAssign.variable.name).toBe("foo1");
+    expect(secondAssign.variable.type).toBe("string");
+    expect(secondAssign.value.value.inner).toBe("str value 2");
   });
 
-  it("should 3", async function () {
+  it("should parse conditions with nested instructions", async function () {
     const tokens = njs.tokenize(`
     if(true) {
       foo: string = "str value";
-      foo1: string = "str value 2";
     }
     `);
 
@@ -162,6 +184,65 @@ describe("Parser", () => {
 
     const result = parser.parse(tokens);
 
-    console.log(result);
+    expect(result.root).toBeDefined();
+    const root = result.root as any;
+    expect(root.nodes).toBeDefined();
+    expect(root.nodes).toHaveLength(1);
+
+    const condition = root.nodes[0] as Condition;
+    expect(condition).toBeInstanceOf(Condition);
+
+    const expr = condition.condition as Value;
+    expect(expr).toBeInstanceOf(Value);
+    expect(expr.value.inner).toBe("true");
+
+    expect(condition.instruction).toBeInstanceOf(Assign);
+    const instruction = condition.instruction as Assign;
+    expect(instruction.variable.name).toBe("foo");
+    expect(instruction.variable.type).toBe("string");
+    expect(instruction.value.value.inner).toBe("str value");
+  });
+
+  it("should rollback when semicolon is missing", async function () {
+    const tokens = njs.tokenize("foo: number = 100"); // Missing semicolon
+
+    const parser = new Parser(new AssignTerminal());
+
+    const result = parser.parse(tokens);
+
+    // Because it fails to find semicolon, handle should return null
+    // and Parser falls back to creating an empty Node.
+    expect(result.root).toBeDefined();
+    expect(result.root).not.toBeInstanceOf(Assign);
+    expect(Object.keys(result.root).length).toBe(0);
+  });
+
+  it("should rollback when condition brackets are unclosed", async function () {
+    const tokens = njs.tokenize(`
+    if(true) {
+      foo: string = "str value";
+    // missing closing brace }
+    `);
+
+    const parser = new Parser(new ConditionTerminal());
+
+    const result = parser.parse(tokens);
+
+    expect(result.root).toBeDefined();
+    expect(result.root).not.toBeInstanceOf(Condition);
+    expect(Object.keys(result.root).length).toBe(0);
+  });
+
+  it("should rollback when type is not matched in OrHelper", async function () {
+    // Variable type `boolean` is not matched by `OrHelper("number", "string")`
+    const tokens = njs.tokenize("foo: boolean = true;");
+
+    const parser = new Parser(new AssignTerminal());
+
+    const result = parser.parse(tokens);
+
+    expect(result.root).toBeDefined();
+    expect(result.root).not.toBeInstanceOf(Assign);
+    expect(Object.keys(result.root).length).toBe(0);
   });
 });
