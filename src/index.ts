@@ -6,11 +6,10 @@ import { StringHandler } from "lexer/handlers/string.handler";
 import { Lexer } from "lexer/lexer";
 import { Logger } from "logger/logger";
 import { Parser } from "parser";
-import { Preprocessor } from "preprocessor";
+import { Executor } from "executor";
 
 export const njs = new Njs(
   new Logger(),
-  new Preprocessor(),
   new Lexer(
     new StringHandler(),
     new IdentifierHandler(),
@@ -18,4 +17,5 @@ export const njs = new Njs(
     new NumberHandler(),
   ),
   new Parser(),
+  new Executor(),
 );

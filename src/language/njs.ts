@@ -3,14 +3,14 @@ import { NjsLexer, NjsToken } from "lexer/types";
 import { NjsLogger } from "logger/types";
 import { NjsAstTree, NjsParser } from "parser/types";
 import path from "path";
-import { NjsPreprocessor } from "preprocessor/types";
+import { NjsExecutor } from "executor/types";
 
 export class Njs {
   constructor(
     private readonly logger: NjsLogger,
-    private readonly preprocessor: NjsPreprocessor,
     private readonly lexer: NjsLexer,
     private readonly parser: NjsParser,
+    private readonly executor: NjsExecutor,
   ) {}
 
   static randomKey() {
@@ -23,10 +23,6 @@ export class Njs {
     return buffer.toString();
   }
 
-  preprocessing(source: string, dir: string): Promise<string> {
-    return this.preprocessor.run(source, dir);
-  }
-
   tokenize(source: string): NjsToken<any>[] {
     return this.lexer.run(source);
   }
@@ -35,7 +31,9 @@ export class Njs {
     return this.parser.parse(tokens);
   }
 
-  after(ast: NjsAstTree) {}
+  execute(ast: NjsAstTree) {
+    return this.executor.execute(ast.root);
+  }
 
   async run(pathToFile: string) {
     try {
@@ -45,10 +43,9 @@ export class Njs {
 
       const parsedPath = path.parse(pathToFile);
 
-      const transformed = await this.preprocessing(source, parsedPath.dir);
-      const tokens = this.tokenize(transformed);
+      const tokens = this.tokenize(source);
       const ast = this.parse(tokens);
-      const result = this.after(ast);
+      const result = this.execute(ast);
 
       this.logger.time("njs");
 
