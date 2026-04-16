@@ -5,7 +5,7 @@ export interface NjsExecutor {
   execute(ast: NjsAstNode): any;
 }
 
-export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode> {
+export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = any> {
   protected executor!: Executor;
 
   setExecutor(executor: Executor) {
@@ -18,5 +18,14 @@ export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode> {
 
   abstract cast(node: NjsAstNode): node is T;
 
-  abstract execute(node: T): any;
+  abstract execute(node: T): R;
 }
+
+export abstract class NjsStatementExecutor<
+  T extends NjsAstNode = NjsAstNode,
+> extends NjsBaseExecutor<T, void> {}
+
+export abstract class NjsExpressionExecutor<
+  T extends NjsAstNode = NjsAstNode,
+  R = any,
+> extends NjsBaseExecutor<T, R> {}
