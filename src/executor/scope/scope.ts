@@ -1,4 +1,4 @@
-import { NjsScope, NjsScopeVariable, NjsScopeModifier } from "./types";
+import { NjsScope, NjsScopeVariable, NjsScopeModifier, NjsValue } from "./types";
 import { ExecutorError } from "../executor.error";
 
 export class Scope implements NjsScope {
@@ -10,7 +10,7 @@ export class Scope implements NjsScope {
     return this.variables.get(name);
   }
 
-  set(name: string, value: any): void {
+  set(name: string, value: NjsValue): void {
     const variable = this.variables.get(name);
 
     if (variable) {

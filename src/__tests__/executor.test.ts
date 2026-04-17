@@ -92,8 +92,8 @@ class BinaryExpressionExecutor extends NjsExpressionExecutor<BinaryExpression, a
   }
 
   execute(node: BinaryExpression, visitor: ExecutorVisitor): any {
-    const left = this.executeAll(node.left, visitor);
-    const right = this.executeAll(node.right, visitor);
+    const left = visitor.execute(node.left);
+    const right = visitor.execute(node.right);
 
     switch (node.operator) {
       case "+":
@@ -122,7 +122,7 @@ class VariableDeclarationExecutor extends NjsStatementExecutor<VariableDeclarati
   }
 
   execute(node: VariableDeclaration, visitor: ExecutorVisitor): void {
-    const value = this.executeAll(node.init, visitor);
+    const value = visitor.execute(node.init);
     // Use apply from scope if needed, or set
     visitor.scope.set(node.name, value);
   }
@@ -134,7 +134,7 @@ class AssignmentExpressionExecutor extends NjsExpressionExecutor<AssignmentExpre
   }
 
   execute(node: AssignmentExpression, visitor: ExecutorVisitor): any {
-    const value = this.executeAll(node.value, visitor);
+    const value = visitor.execute(node.value);
     visitor.scope.set(node.name, value);
     return value; // assignments are expressions
   }
@@ -148,7 +148,7 @@ class BlockStatementExecutor extends NjsStatementExecutor<BlockStatement> {
   execute(node: BlockStatement, visitor: ExecutorVisitor): void {
     visitor.scope.push();
     for (const statement of node.statements) {
-      this.executeAll(statement, visitor);
+      visitor.execute(statement);
     }
     visitor.scope.pop();
   }
@@ -160,11 +160,11 @@ class IfStatementExecutor extends NjsStatementExecutor<IfStatement> {
   }
 
   execute(node: IfStatement, visitor: ExecutorVisitor): void {
-    const conditionResult = this.executeAll(node.condition, visitor);
+    const conditionResult = visitor.execute(node.condition);
     if (conditionResult) {
-      this.executeAll(node.consequent, visitor);
+      visitor.execute(node.consequent);
     } else if (node.alternate) {
-      this.executeAll(node.alternate, visitor);
+      visitor.execute(node.alternate);
     }
   }
 }
@@ -177,21 +177,21 @@ class ForStatementExecutor extends NjsStatementExecutor<ForStatement> {
   execute(node: ForStatement, visitor: ExecutorVisitor): void {
     visitor.scope.push();
     if (node.init) {
-      this.executeAll(node.init, visitor);
+      visitor.execute(node.init);
     }
 
     while (true) {
       if (node.condition) {
-        const conditionResult = this.executeAll(node.condition, visitor);
+        const conditionResult = visitor.execute(node.condition);
         if (!conditionResult) {
           break;
         }
       }
 
-      this.executeAll(node.body, visitor);
+      visitor.execute(node.body);
 
       if (node.update) {
-        this.executeAll(node.update, visitor);
+        visitor.execute(node.update);
       }
     }
     visitor.scope.pop();

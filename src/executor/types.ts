@@ -6,16 +6,6 @@ export interface NjsExecutor {
 }
 
 export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = any> {
-  protected visitor!: ExecutorVisitor;
-
-  // We keep setExecutor to wire up backwards compatibility or directly use the visitor
-  // However, the visitor handles everything, so maybe handlers just need execute(node, visitor).
-  // But we can keep an executeAll on the base that relies on the passed-in visitor.
-
-  executeAll(node: NjsAstNode, visitor: ExecutorVisitor): any {
-    return visitor.execute(node);
-  }
-
   abstract cast(node: NjsAstNode): node is T;
 
   abstract execute(node: T, visitor: ExecutorVisitor): R;

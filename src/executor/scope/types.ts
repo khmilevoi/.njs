@@ -1,17 +1,18 @@
+export type NjsValue = any;
 export interface NjsScopeVariable {
   type: string;
   name: string;
-  value: any;
+  value: NjsValue;
 }
 
 export interface NjsScopeModifier {
   readonly type: string;
-  create(name: string, value: any): NjsScopeVariable;
-  update(variable: NjsScopeVariable, newValue: any): void;
+  create(name: string, value: NjsValue): NjsScopeVariable;
+  update(variable: NjsScopeVariable, newValue: NjsValue): void;
 }
 
 export interface NjsScope {
   get(name: string): NjsScopeVariable | undefined;
-  set(name: string, value: any, modifiers?: NjsScopeModifier[]): void;
+  set(name: string, value: NjsValue, modifiers?: NjsScopeModifier[]): void;
   apply(variable: NjsScopeVariable): void;
 }

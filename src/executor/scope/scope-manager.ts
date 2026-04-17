@@ -1,4 +1,4 @@
-import { NjsScopeModifier, NjsScopeVariable } from "./types";
+import { NjsScopeModifier, NjsScopeVariable, NjsValue } from "./types";
 import { Scope } from "./scope";
 import { ExecutorError } from "../executor.error";
 
@@ -28,7 +28,7 @@ export abstract class NjsBaseScopeManager {
     return this.scopes[this.scopes.length - 1];
   }
 
-  get(name: string): any {
+  get(name: string): NjsValue {
     for (let i = this.scopes.length - 1; i >= 0; i--) {
       const scope = this.scopes[i];
       const variable = scope.get(name);
@@ -39,7 +39,7 @@ export abstract class NjsBaseScopeManager {
     throw new ExecutorError(`Variable '${name}' is not defined`);
   }
 
-  set(name: string, value: any): void {
+  set(name: string, value: NjsValue): void {
     for (let i = this.scopes.length - 1; i >= 0; i--) {
       const scope = this.scopes[i];
       const variable = scope.get(name);

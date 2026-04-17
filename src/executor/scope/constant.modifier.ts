@@ -1,10 +1,10 @@
 import { ExecutorError } from "../executor.error";
-import { NjsScopeModifier, NjsScopeVariable } from "./types";
+import { NjsScopeModifier, NjsScopeVariable, NjsValue } from "./types";
 
 export class ConstantScopeModifier implements NjsScopeModifier {
   readonly type = "constant";
 
-  create(name: string, value: any): NjsScopeVariable {
+  create(name: string, value: NjsValue): NjsScopeVariable {
     return {
       type: this.type,
       name,
@@ -12,7 +12,7 @@ export class ConstantScopeModifier implements NjsScopeModifier {
     };
   }
 
-  update(variable: NjsScopeVariable, newValue: any): void {
+  update(variable: NjsScopeVariable, newValue: NjsValue): void {
     throw new ExecutorError(`Assignment to constant variable: ${variable.name}`);
   }
 }
