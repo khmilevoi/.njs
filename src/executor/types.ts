@@ -1,24 +1,24 @@
 import { NjsAstNode } from "parser/types";
-import { Executor } from "./executor";
+import { ExecutorVisitor } from "./executor.visitor";
 
 export interface NjsExecutor {
-  execute(ast: NjsAstNode): any;
+  execute(ast: NjsAstNode, visitor: ExecutorVisitor): any;
 }
 
 export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = any> {
-  protected executor!: Executor;
+  protected visitor!: ExecutorVisitor;
 
-  setExecutor(executor: Executor) {
-    this.executor = executor;
-  }
+  // We keep setExecutor to wire up backwards compatibility or directly use the visitor
+  // However, the visitor handles everything, so maybe handlers just need execute(node, visitor).
+  // But we can keep an executeAll on the base that relies on the passed-in visitor.
 
-  executeAll(node: NjsAstNode): any {
-    return this.executor.execute(node);
+  executeAll(node: NjsAstNode, visitor: ExecutorVisitor): any {
+    return visitor.execute(node);
   }
 
   abstract cast(node: NjsAstNode): node is T;
 
-  abstract execute(node: T): R;
+  abstract execute(node: T, visitor: ExecutorVisitor): R;
 }
 
 export abstract class NjsStatementExecutor<
