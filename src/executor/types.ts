@@ -1,24 +1,15 @@
 import { NjsAstNode } from "parser/types";
-import { Executor } from "./executor";
+import { ExecutorVisitor } from "./executor.visitor";
+import { NjsValue } from "./scope";
 
 export interface NjsExecutor {
-  execute(ast: NjsAstNode): any;
+  execute(ast: NjsAstNode, visitor: ExecutorVisitor): NjsValue;
 }
 
-export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = any> {
-  protected executor!: Executor;
-
-  setExecutor(executor: Executor) {
-    this.executor = executor;
-  }
-
-  executeAll(node: NjsAstNode): any {
-    return this.executor.execute(node);
-  }
-
+export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = NjsValue> {
   abstract cast(node: NjsAstNode): node is T;
 
-  abstract execute(node: T): R;
+  abstract execute(node: T, visitor: ExecutorVisitor): R;
 }
 
 export abstract class NjsStatementExecutor<
@@ -27,5 +18,5 @@ export abstract class NjsStatementExecutor<
 
 export abstract class NjsExpressionExecutor<
   T extends NjsAstNode = NjsAstNode,
-  R = any,
+  R = NjsValue,
 > extends NjsBaseExecutor<T, R> {}

@@ -3,7 +3,9 @@ import { NjsLexer, NjsToken } from "lexer/types";
 import { NjsLogger } from "logger/types";
 import { NjsAstTree, NjsParser } from "parser/types";
 import path from "path";
-import { NjsExecutor } from "executor/types";
+import { NjsExecutor, ScopeManager, ExecutorVisitor } from "executor";
+
+import { NjsValue } from "executor/scope/types";
 
 export class Njs {
   constructor(
@@ -11,6 +13,7 @@ export class Njs {
     private readonly lexer: NjsLexer,
     private readonly parser: NjsParser,
     private readonly executor: NjsExecutor,
+    private readonly scopeManager: ScopeManager = new ScopeManager(),
   ) {}
 
   static randomKey() {
@@ -31,8 +34,9 @@ export class Njs {
     return this.parser.parse(tokens);
   }
 
-  execute(ast: NjsAstTree) {
-    return this.executor.execute(ast.root);
+  execute(ast: NjsAstTree): NjsValue {
+    const visitor = new ExecutorVisitor(this.executor, this.scopeManager);
+    return visitor.execute(ast.root);
   }
 
   async run(pathToFile: string) {
@@ -51,7 +55,7 @@ export class Njs {
 
       return result;
     } catch (error) {
-      this.logger.handle(error);
+      this.logger.handle(error as any);
     }
   }
 }
