@@ -92,8 +92,8 @@ class BinaryExpressionExecutor extends NjsExpressionExecutor<BinaryExpression, a
   }
 
   execute(node: BinaryExpression, visitor: ExecutorVisitor): any {
-    const left = visitor.execute(node.left);
-    const right = visitor.execute(node.right);
+    const left = visitor.execute(node.left) as any;
+    const right = visitor.execute(node.right) as any;
 
     switch (node.operator) {
       case "+":

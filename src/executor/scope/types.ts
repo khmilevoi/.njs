@@ -1,4 +1,4 @@
-export type NjsValue = any;
+export type NjsValue = unknown;
 export interface NjsScopeVariable {
   type: string;
   name: string;
