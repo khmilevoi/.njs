@@ -5,6 +5,8 @@ import { NjsAstTree, NjsParser } from "parser/types";
 import path from "path";
 import { NjsExecutor, ScopeManager, ExecutorVisitor } from "executor";
 
+import { NjsValue } from "executor/scope/types";
+
 export class Njs {
   constructor(
     private readonly logger: NjsLogger,
@@ -32,7 +34,7 @@ export class Njs {
     return this.parser.parse(tokens);
   }
 
-  execute(ast: NjsAstTree) {
+  execute(ast: NjsAstTree): NjsValue {
     const visitor = new ExecutorVisitor(this.executor, this.scopeManager);
     return visitor.execute(ast.root);
   }

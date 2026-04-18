@@ -1,4 +1,5 @@
 import { Executor } from "executor";
+import { NjsValue } from "executor/scope/types";
 import {
   NjsExpressionExecutor,
   NjsStatementExecutor,
@@ -76,22 +77,22 @@ class NumberLiteralExecutor extends NjsExpressionExecutor<NumberLiteral, number>
   }
 }
 
-class IdentifierExecutor extends NjsExpressionExecutor<Identifier, any> {
+class IdentifierExecutor extends NjsExpressionExecutor<Identifier, NjsValue> {
   cast(node: NjsAstNode): node is Identifier {
     return node instanceof Identifier;
   }
 
-  execute(node: Identifier, visitor: ExecutorVisitor): any {
+  execute(node: Identifier, visitor: ExecutorVisitor): NjsValue {
     return visitor.scope.get(node.name);
   }
 }
 
-class BinaryExpressionExecutor extends NjsExpressionExecutor<BinaryExpression, any> {
+class BinaryExpressionExecutor extends NjsExpressionExecutor<BinaryExpression, NjsValue> {
   cast(node: NjsAstNode): node is BinaryExpression {
     return node instanceof BinaryExpression;
   }
 
-  execute(node: BinaryExpression, visitor: ExecutorVisitor): any {
+  execute(node: BinaryExpression, visitor: ExecutorVisitor): NjsValue {
     const left = visitor.execute(node.left) as any;
     const right = visitor.execute(node.right) as any;
 
@@ -128,12 +129,12 @@ class VariableDeclarationExecutor extends NjsStatementExecutor<VariableDeclarati
   }
 }
 
-class AssignmentExpressionExecutor extends NjsExpressionExecutor<AssignmentExpression, any> {
+class AssignmentExpressionExecutor extends NjsExpressionExecutor<AssignmentExpression, NjsValue> {
   cast(node: NjsAstNode): node is AssignmentExpression {
     return node instanceof AssignmentExpression;
   }
 
-  execute(node: AssignmentExpression, visitor: ExecutorVisitor): any {
+  execute(node: AssignmentExpression, visitor: ExecutorVisitor): NjsValue {
     const value = visitor.execute(node.value);
     visitor.scope.set(node.name, value);
     return value; // assignments are expressions

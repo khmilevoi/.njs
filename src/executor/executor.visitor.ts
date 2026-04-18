@@ -1,5 +1,5 @@
 import { NjsAstNode } from "parser/types";
-import { ScopeManager } from "./scope";
+import { ScopeManager, NjsValue } from "./scope";
 import { NjsExecutor } from "./types";
 
 export class ExecutorVisitor {
@@ -8,7 +8,7 @@ export class ExecutorVisitor {
     public readonly scope: ScopeManager,
   ) {}
 
-  execute(node: NjsAstNode): any {
+  execute(node: NjsAstNode): NjsValue {
     return this.executor.execute(node, this);
   }
 }

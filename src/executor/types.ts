@@ -1,11 +1,12 @@
 import { NjsAstNode } from "parser/types";
 import { ExecutorVisitor } from "./executor.visitor";
+import { NjsValue } from "./scope";
 
 export interface NjsExecutor {
-  execute(ast: NjsAstNode, visitor: ExecutorVisitor): any;
+  execute(ast: NjsAstNode, visitor: ExecutorVisitor): NjsValue;
 }
 
-export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = any> {
+export abstract class NjsBaseExecutor<T extends NjsAstNode = NjsAstNode, R = NjsValue> {
   abstract cast(node: NjsAstNode): node is T;
 
   abstract execute(node: T, visitor: ExecutorVisitor): R;
@@ -17,5 +18,5 @@ export abstract class NjsStatementExecutor<
 
 export abstract class NjsExpressionExecutor<
   T extends NjsAstNode = NjsAstNode,
-  R = any,
+  R = NjsValue,
 > extends NjsBaseExecutor<T, R> {}
