@@ -16,6 +16,8 @@ export class Parser implements NjsParser, ParserTarget {
   }
 
   parse(tokens: NjsToken<any>[]): NjsAstTree {
+    this.iteratorStack = [];
+    this.iterator = 0;
     this.tokens = tokens;
 
     const root = this.handler.handle(this.visitor);

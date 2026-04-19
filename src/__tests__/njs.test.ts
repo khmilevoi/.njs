@@ -17,6 +17,7 @@ import { NjsAstNode, NjsBaseTerminal, NjsParserHandledItem, NjsGrammarItem } fro
 import { OrHelper, LoopHelper, LoopNode } from "../parser/helpers/or.helper";
 import { NjsToken } from "../lexer/types";
 import { NjsExpressionExecutor, NjsStatementExecutor, ExecutorVisitor } from "../executor";
+import { ReturnSignal, ControlFlowSignal } from "../executor/types";
 
 // --- 1. AST Nodes ---
 class NumberNode implements NjsAstNode {
@@ -426,10 +427,14 @@ class BlockExecutor extends NjsStatementExecutor<BlockNode> {
   cast(node: NjsAstNode): node is BlockNode {
     return node instanceof BlockNode;
   }
-  execute(node: BlockNode, visitor: ExecutorVisitor): void {
+  execute(node: BlockNode, visitor: ExecutorVisitor): any {
     visitor.scope.push();
     for (const stmt of node.statements) {
-      visitor.execute(stmt);
+      const result = visitor.execute(stmt);
+      if (result instanceof ControlFlowSignal) {
+        visitor.scope.pop();
+        return result;
+      }
     }
     visitor.scope.pop();
   }
@@ -439,10 +444,9 @@ class IfExecutor extends NjsStatementExecutor<IfNode> {
   cast(node: NjsAstNode): node is IfNode {
     return node instanceof IfNode;
   }
-  execute(node: IfNode, visitor: ExecutorVisitor): void {
-    const condition = visitor.execute(node.condition);
-    if (condition) {
-      visitor.execute(node.body);
+  execute(node: IfNode, visitor: ExecutorVisitor): any {
+    if (visitor.execute(node.condition)) {
+      return visitor.execute(node.body);
     }
   }
 }
@@ -451,9 +455,12 @@ class WhileExecutor extends NjsStatementExecutor<WhileNode> {
   cast(node: NjsAstNode): node is WhileNode {
     return node instanceof WhileNode;
   }
-  execute(node: WhileNode, visitor: ExecutorVisitor): void {
+  execute(node: WhileNode, visitor: ExecutorVisitor): any {
     while (visitor.execute(node.condition)) {
-      visitor.execute(node.body);
+      const result = visitor.execute(node.body);
+      if (result instanceof ControlFlowSignal) {
+        return result;
+      }
     }
   }
 }
@@ -480,16 +487,10 @@ class FunctionCallExecutor extends NjsExpressionExecutor<FunctionCallNode, any> 
       visitor.scope.apply({ type: "default", name: funcNode.params[i], value: argValues[i] });
     }
     visitor.scope.apply({ type: "default", name: funcNode.name, value: funcNode });
-    let result = null;
-    try {
-      visitor.execute(funcNode.body);
-    } catch (e) {
-      if (e instanceof ReturnException) {
-        result = e.value;
-      } else {
-        throw e;
-      }
-    }
+
+    const execResult = visitor.execute(funcNode.body);
+    let result = execResult instanceof ReturnSignal ? execResult.value : execResult;
+
     visitor.scope.pop();
     return result;
   }
@@ -499,9 +500,9 @@ class ReturnExecutor extends NjsStatementExecutor<ReturnNode> {
   cast(node: NjsAstNode): node is ReturnNode {
     return node instanceof ReturnNode;
   }
-  execute(node: ReturnNode, visitor: ExecutorVisitor): void {
+  execute(node: ReturnNode, visitor: ExecutorVisitor): any {
     const value = visitor.execute(node.argument);
-    throw new ReturnException(value);
+    return new ReturnSignal(value);
   }
 }
 
@@ -511,16 +512,12 @@ class ProgramExecutor extends NjsExpressionExecutor<ProgramNode, any> {
   }
   execute(node: ProgramNode, visitor: ExecutorVisitor): any {
     let result = null;
-    try {
-      for (const stmt of node.body) {
-        const stmtResult = visitor.execute(stmt);
-        result = stmtResult !== null && stmtResult !== undefined ? stmtResult : result;
+    for (const stmt of node.body) {
+      const stmtResult = visitor.execute(stmt);
+      if (stmtResult instanceof ReturnSignal) {
+        return stmtResult.value;
       }
-    } catch (e) {
-      if (e instanceof ReturnException) {
-        return e.value;
-      }
-      throw e;
+      result = stmtResult !== null && stmtResult !== undefined ? stmtResult : result;
     }
     return result;
   }
@@ -574,7 +571,6 @@ describe("Njs Full Execution", () => {
       (this as any).iterator = 0;
       (this as any).iteratorStack = [];
       const ast = originalParse(tokens);
-      console.log("AST IN NJS RUN:", JSON.stringify(ast, null, 2));
       return ast;
     };
 
@@ -635,7 +631,6 @@ describe("Njs Full Execution", () => {
       (this as any).iterator = 0;
       (this as any).iteratorStack = [];
       const ast = originalParse(tokens);
-      console.log("AST IN NJS RUN:", JSON.stringify(ast, null, 2));
       return ast;
     };
 
@@ -650,4 +645,42 @@ describe("Njs Full Execution", () => {
     const result = await njsEngine.run("src/__tests__/resources/factorial-recursive.njs");
     expect(result).toBe(120);
   });
+});
+
+it("should reuse the same njsEngine and run both scripts successfully without state leakage", async () => {
+  const lexer = new Lexer(
+    new StringHandler(),
+    new IdentifierHandler(),
+    new ServiceSymbolsHandler(),
+    new NumberHandler(),
+    new SpaceHandler(),
+    new NewLineHandler(), // Now Lexer filters this automatically because we set skip=true
+  );
+
+  const parser = new Parser(new ProgramTerminal());
+
+  const executor = new Executor(
+    new NumberExecutor(),
+    new IdentifierExecutor(),
+    new BinaryExpressionExecutor(),
+    new AssignmentExecutor(),
+    new BlockExecutor(),
+    new IfExecutor(),
+    new WhileExecutor(),
+    new FunctionDeclarationExecutor(),
+    new FunctionCallExecutor(),
+    new ReturnExecutor(),
+    new ProgramExecutor(),
+  );
+
+  const njsEngine = new Njs(new Logger(), lexer, parser, executor, new ScopeManager());
+  njsEngine.throwErrors = true;
+
+  // Run first script
+  const result1 = await njsEngine.run("src/__tests__/resources/factorial-loop.njs");
+  expect(result1).toBe(120);
+
+  // Run second script, the parser should reset and successfully parse
+  const result2 = await njsEngine.run("src/__tests__/resources/factorial-recursive.njs");
+  expect(result2).toBe(120);
 });

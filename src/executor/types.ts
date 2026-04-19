@@ -20,3 +20,9 @@ export abstract class NjsExpressionExecutor<
   T extends NjsAstNode = NjsAstNode,
   R = NjsValue,
 > extends NjsBaseExecutor<T, R> {}
+
+export abstract class ControlFlowSignal {
+  constructor(public readonly value?: NjsValue) {}
+}
+
+export class ReturnSignal extends ControlFlowSignal {}
