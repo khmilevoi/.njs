@@ -1,6 +1,7 @@
 import { LexerVisitor } from "lexer/lexer.visitor";
 
 export interface NjsToken<Inner> {
+  readonly skip?: boolean;
   readonly type: string;
   readonly inner: Inner;
 
@@ -8,6 +9,7 @@ export interface NjsToken<Inner> {
 }
 
 export abstract class NjsBaseToken<Inner> implements NjsToken<Inner> {
+  readonly skip?: boolean;
   abstract readonly type: string;
 
   constructor(public readonly inner: Inner) {}

@@ -8,6 +8,7 @@ import { NjsExecutor, ScopeManager, ExecutorVisitor } from "executor";
 import { NjsValue } from "executor/scope/types";
 
 export class Njs {
+  public throwErrors: boolean = false;
   constructor(
     private readonly logger: NjsLogger,
     private readonly lexer: NjsLexer,
@@ -56,6 +57,9 @@ export class Njs {
       return result;
     } catch (error) {
       this.logger.handle(error as any);
+      if (this.throwErrors) {
+        throw error;
+      }
     }
   }
 }

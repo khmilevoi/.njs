@@ -74,7 +74,9 @@ export class Lexer implements NjsLexer, NjsTarget {
               this.increaseLine();
             }
 
-            this.tokens.push(descriptor.token);
+            if (!descriptor.token.skip) {
+              this.tokens.push(descriptor.token);
+            }
           }
         }
       });
