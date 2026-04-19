@@ -27,7 +27,7 @@ describe("Lexer", () => {
 
     const tokens = lexer.run(source);
 
-    const expectedLength = (source.match(/;/g)?.length ?? 0) + (source.match(/\n/g)?.length ?? 0);
+    const expectedLength = source.match(/;/g)?.length ?? 0;
 
     expect(tokens).toHaveLength(expectedLength);
   });
@@ -139,18 +139,18 @@ describe("Lexer", () => {
     );
     const tokens = lexer.run(`let a = 123;\n// a comment\n"hello"`);
 
-    expect(tokens).toHaveLength(8);
+    expect(tokens).toHaveLength(6);
     expect(tokens[0].type).toBe("identifier");
     expect(tokens[0].inner).toBe("let");
+    expect(tokens[1].type).toBe("identifier");
+    expect(tokens[1].inner).toBe("a");
     expect(tokens[2].type).toBe("service-symbol");
     expect(tokens[2].inner).toBe("=");
     expect(tokens[3].type).toBe("number");
     expect(tokens[3].inner).toBe(123);
     expect(tokens[4].type).toBe("semicolon");
-    expect(tokens[5].type).toBe("new-line");
-    expect(tokens[6].type).toBe("new-line");
-    expect(tokens[7].type).toBe("string");
-    expect(tokens[7].inner).toBe("hello");
+    expect(tokens[5].type).toBe("string");
+    expect(tokens[5].inner).toBe("hello");
   });
 
   it("should accurately track line numbers", function () {
